@@ -12,11 +12,51 @@ public class LatestData {
     private String date;
     private List<Story> stories;
     @SerializedName("top_stories")
-    private List<Story> topStorys;
+    private List<TopStory> topStories;
 
 
-    public class Story{
+    public class Story {
         @SerializedName("images")
+        private String[] imageUrl;
+        private String id;
+        private String title;
+
+        public String[] getImageUrl() {
+            return imageUrl;
+        }
+
+        public void setImageUrl(String[] imageUrl) {
+            this.imageUrl = imageUrl;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        @Override
+        public String toString() {
+            return "Story{" +
+                    "imageUrl='" + imageUrl + '\'' +
+                    ", id='" + id + '\'' +
+                    ", title='" + title + '\'' +
+                    '}';
+        }
+    }
+
+    public class TopStory {
+        @SerializedName("image")
         private String imageUrl;
         private String id;
         private String title;
@@ -71,11 +111,11 @@ public class LatestData {
         this.stories = stories;
     }
 
-    public List<Story> getTopStorys() {
-        return topStorys;
+    public List<TopStory> getTopStories() {
+        return topStories;
     }
 
-    public void setTopStorys(List<Story> topStorys) {
-        this.topStorys = topStorys;
+    public void setTopStorys(List<TopStory> topStories) {
+        this.topStories = topStories;
     }
 }

@@ -11,6 +11,6 @@ import rx.Observable;
 public interface ApiService {
 
     @GET("api/4/news/latest")
-    Observable<LatestData> getLastestData();
+    Observable<LatestData> getLatestData();
 
 }

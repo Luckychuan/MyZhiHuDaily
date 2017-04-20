@@ -1,8 +1,6 @@
-package com.example.luckychuan.myzhihudaily;
+package com.example.luckychuan.myzhihudaily.retrofit;
 
 import android.app.Application;
-
-import com.example.luckychuan.myzhihudaily.retrofit.RetrofitUtil;
 
 /**
  * Created by Luckychuan on 2017/4/20.

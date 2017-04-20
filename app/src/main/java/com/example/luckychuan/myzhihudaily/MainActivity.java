@@ -2,19 +2,27 @@ package com.example.luckychuan.myzhihudaily;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.example.luckychuan.myzhihudaily.bean.LatestData;
+import com.example.luckychuan.myzhihudaily.model.Callback;
+import com.example.luckychuan.myzhihudaily.model.GetLatestDataModelImpl;
+import com.example.luckychuan.myzhihudaily.view.BaseView;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,BaseView<LatestData> {
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,29 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        test();
+
+    }
+
+    private void test() {
+        new GetLatestDataModelImpl().getLatestData(new Callback<LatestData>() {
+            @Override
+            public void onSuccess(LatestData bean) {
+                Log.d(TAG, "onSuccess: "+bean.getDate());
+                for(LatestData.Story story: bean.getStories()){
+                    Log.d(TAG, "onSuccess: "+story.toString());
+                }
+                for(LatestData.TopStory story: bean.getTopStories()){
+                    Log.d(TAG, "onSuccess: "+story.toString());
+                }
+            }
+
+            @Override
+            public void onFail(String errorMsg) {
+                Log.d(TAG, "onFail: ");
+            }
+        });
     }
 
     @Override
@@ -97,5 +128,15 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void updateUI(LatestData data) {
+
+    }
+
+    @Override
+    public void showErrorMsg(String error) {
+        //由于知乎日报在首页并没有
     }
 }
