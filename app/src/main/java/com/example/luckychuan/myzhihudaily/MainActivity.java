@@ -15,19 +15,31 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
-import com.example.luckychuan.myzhihudaily.model.Callback;
-import com.example.luckychuan.myzhihudaily.model.GetLatestDataModelImpl;
+import com.example.luckychuan.myzhihudaily.presenter.GetLatestDataPresenter;
 import com.example.luckychuan.myzhihudaily.view.BaseView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,BaseView<LatestData> {
 
     private static final String TAG = "MainActivity";
+    private GetLatestDataPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initUI();
+
+        mPresenter = new GetLatestDataPresenter(this);
+        mPresenter.attach(this);
+        mPresenter.requestData();
+
+        test();
+
+    }
+
+    private void initUI() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -48,29 +60,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        test();
-
     }
 
     private void test() {
-        new GetLatestDataModelImpl().getLatestData(new Callback<LatestData>() {
-            @Override
-            public void onSuccess(LatestData bean) {
-                Log.d(TAG, "onSuccess: "+bean.getDate());
-                for(LatestData.Story story: bean.getStories()){
-                    Log.d(TAG, "onSuccess: "+story.toString());
-                }
-                for(LatestData.TopStory story: bean.getTopStories()){
-                    Log.d(TAG, "onSuccess: "+story.toString());
-                }
-            }
-
-            @Override
-            public void onFail(String errorMsg) {
-                Log.d(TAG, "onFail: ");
-            }
-        });
     }
 
     @Override
@@ -132,11 +124,23 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void updateUI(LatestData data) {
-
+        Log.d(TAG, "onSuccess: " + data.getDate());
+        for(LatestData.Story story: data.getStories()){
+            Log.d(TAG, "onSuccess: "+story.toString());
+        }
+        for(LatestData.TopStory story: data.getTopStories()){
+            Log.d(TAG, "onSuccess: "+story.toString());
+        }
     }
 
     @Override
     public void showErrorMsg(String error) {
-        //由于知乎日报在首页并没有
+        //由于知乎日报在首页并没有提示错误，此方法不写内容
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.detach();
     }
 }
