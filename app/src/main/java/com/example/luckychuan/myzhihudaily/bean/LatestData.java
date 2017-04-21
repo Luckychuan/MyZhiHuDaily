@@ -2,6 +2,7 @@ package com.example.luckychuan.myzhihudaily.bean;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +15,11 @@ public class LatestData {
     @SerializedName("top_stories")
     private List<TopStory> topStories;
 
+    public LatestData(){
+        stories = new ArrayList<>();
+        topStories = new ArrayList<>();
+    }
+
 
     public class Story {
         @SerializedName("images")
@@ -21,8 +27,8 @@ public class LatestData {
         private String id;
         private String title;
 
-        public String[] getImageUrl() {
-            return imageUrl;
+        public String getImageUrl() {
+            return imageUrl[0];
         }
 
         public void setImageUrl(String[] imageUrl) {
