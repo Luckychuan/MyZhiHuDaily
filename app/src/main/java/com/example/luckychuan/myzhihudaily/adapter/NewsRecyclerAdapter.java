@@ -19,6 +19,7 @@ import java.util.List;
  */
 public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapter.ViewHolder> {
 
+    private static final String TAG = "NewsRecyclerAdapter";
     private OnItemClickListener mListener;
     private List<LatestData.Story> mList;
     private Context mContext;

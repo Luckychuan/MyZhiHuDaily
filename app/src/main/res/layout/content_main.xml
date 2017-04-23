@@ -8,7 +8,38 @@
     tools:context="com.example.luckychuan.myzhihudaily.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <RelativeLayout
+        android:id="@+id/banner_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.jude.rollviewpager.RollPagerView
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></com.jude.rollviewpager.RollPagerView>
+
+        <ImageView
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/banner_shadow"/>
+
+        <TextView
+            android:layout_alignParentBottom="true"
+            android:id="@+id/top_story_title"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:text="@string/testLong"
+            android:textColor="@color/white"/>
+
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/banner_layout"
         android:id="@+id/news_title_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
