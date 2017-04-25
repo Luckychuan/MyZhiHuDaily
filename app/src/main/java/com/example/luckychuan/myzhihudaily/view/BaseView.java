@@ -1,8 +1,7 @@
 package com.example.luckychuan.myzhihudaily.view;
 
 
-public interface BaseView<T> {
+public interface BaseView {
 
-    void updateUI(T data);
     void showErrorMsg(String error);
 }

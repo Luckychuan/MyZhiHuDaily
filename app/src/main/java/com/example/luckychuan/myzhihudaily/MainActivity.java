@@ -8,21 +8,23 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.luckychuan.myzhihudaily.adapter.BannerAdapter;
-import com.example.luckychuan.myzhihudaily.adapter.NewsRecyclerAdapter;
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
+import com.example.luckychuan.myzhihudaily.bean.News;
+import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.presenter.GetLatestDataPresenter;
-import com.example.luckychuan.myzhihudaily.view.BaseView;
+import com.example.luckychuan.myzhihudaily.presenter.GetOldDataPresenter;
+import com.example.luckychuan.myzhihudaily.view.LatestDataView;
+import com.example.luckychuan.myzhihudaily.view.OldDataView;
 import com.jude.rollviewpager.OnItemClickListener;
 import com.jude.rollviewpager.RollPagerView;
 
@@ -30,14 +32,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, BaseView<LatestData> {
+        implements NavigationView.OnNavigationItemSelectedListener,LatestDataView,OldDataView {
 
     private static final String TAG = "MainActivity";
-    private GetLatestDataPresenter mPresenter;
-    private NewsRecyclerAdapter mRecyclerAdapter;
+    private GetLatestDataPresenter mLDPresenter;
+    private GetOldDataPresenter mODPresenter;
     private LatestData mLatestData;
     //banner上的标题
     private TextView mTitleTextView;
+    private ListView mMainListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +49,9 @@ public class MainActivity extends AppCompatActivity
 
         initUI();
 
-        mPresenter = new GetLatestDataPresenter(this);
-        mPresenter.attach(this);
-        mPresenter.requestData();
+        mLDPresenter = new GetLatestDataPresenter(this);
+        mLDPresenter.attach(this);
+        mLDPresenter.requestData();
 
         test();
 
@@ -68,25 +71,16 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         mLatestData = new LatestData();
-        mRecyclerAdapter = new NewsRecyclerAdapter(mLatestData.getStories(), new NewsRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
 
-            }
 
-            @Override
-            public void onItemLongClick(int position) {
 
-            }
-        });
-
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.news_title_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(mRecyclerAdapter);
 
     }
 
     private void test() {
+        mODPresenter = new GetOldDataPresenter(this);
+        mODPresenter.attach(this);
+        mODPresenter.requestData("20170420");
     }
 
     @Override
@@ -148,15 +142,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void updateUI(LatestData data) {
-        mLatestData.setDate(data.getDate());
-        mLatestData.getStories().clear();
-        mLatestData.getStories().addAll(data.getStories());
-        mRecyclerAdapter.notifyDataSetChanged();
-
-        mLatestData.getTopStories().clear();
-        mLatestData.getTopStories().addAll(data.getTopStories());
-
-        initBanner();
+//        // TODO: 2017/4/25
+//
+//        mLatestData.getTopStories().clear();
+//        mLatestData.getTopStories().addAll(data.getTopStories());
+//
+//        initBanner();
 
     }
 
@@ -200,6 +191,8 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+
     @Override
     public void showErrorMsg(String error) {
         //由于知乎日报在首页并没有提示错误，此方法不写内容
@@ -208,7 +201,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPresenter.detach();
+        mLDPresenter.detach();
+        mODPresenter.detach();
+    }
+
+    @Override
+    public void updateUI(News data) {
+        for(Story story:data.getStories()){
+            Log.d(TAG, "updateUI: "+story.toString());
+        }
     }
 
     /**

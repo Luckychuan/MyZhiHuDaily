@@ -38,9 +38,11 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:layout_below="@+id/banner_layout"
-        android:id="@+id/news_title_recycler"
+        android:id="@+id/list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"></ListView>
+
+
 </RelativeLayout>

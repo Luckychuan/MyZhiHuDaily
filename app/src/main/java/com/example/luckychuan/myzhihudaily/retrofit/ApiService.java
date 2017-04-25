@@ -1,8 +1,10 @@
 package com.example.luckychuan.myzhihudaily.retrofit;
 
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
+import com.example.luckychuan.myzhihudaily.bean.News;
 
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -12,5 +14,8 @@ public interface ApiService {
 
     @GET("api/4/news/latest")
     Observable<LatestData> getLatestData();
+
+    @GET("api/4/news/before/{date}")
+    Observable<News> getOldData(@Path("date") String date);
 
 }

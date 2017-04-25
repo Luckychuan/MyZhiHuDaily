@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 新闻首页API的数据
+ * 首页API的新闻
  */
 public class LatestData {
 
@@ -18,47 +18,6 @@ public class LatestData {
     public LatestData(){
         stories = new ArrayList<>();
         topStories = new ArrayList<>();
-    }
-
-
-    public class Story {
-        @SerializedName("images")
-        private String[] imageUrl;
-        private String id;
-        private String title;
-
-        public String getImageUrl() {
-            return imageUrl[0];
-        }
-
-        public void setImageUrl(String[] imageUrl) {
-            this.imageUrl = imageUrl;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        @Override
-        public String toString() {
-            return "Story{" +
-                    "imageUrl='" + imageUrl + '\'' +
-                    ", id='" + id + '\'' +
-                    ", title='" + title + '\'' +
-                    '}';
-        }
     }
 
     public class TopStory {

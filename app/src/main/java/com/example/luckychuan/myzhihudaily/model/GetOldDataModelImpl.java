@@ -1,6 +1,6 @@
 package com.example.luckychuan.myzhihudaily.model;
 
-import com.example.luckychuan.myzhihudaily.bean.LatestData;
+import com.example.luckychuan.myzhihudaily.bean.News;
 import com.example.luckychuan.myzhihudaily.retrofit.ApiService;
 import com.example.luckychuan.myzhihudaily.retrofit.RetrofitUtil;
 
@@ -9,19 +9,18 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by Luckychuan on 2017/4/20.
+ * Created by Luckychuan on 2017/4/25.
  */
-public class GetLatestDataModelImpl implements GetLatestDataModel {
-
+public class GetOldDataModelImpl implements GetOldDataModel {
     @Override
-    public void getLatestData(final Callback<LatestData> callback) {
+    public void getOldData(String date, final Callback<News> callback) {
         RetrofitUtil.getInstance()
                 .getRetrofit()
                 .create(ApiService.class)
-                .getLatestData()
+                .getOldData(date)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<LatestData>() {
+                .subscribe(new Subscriber<News>() {
                     @Override
                     public void onCompleted() {
 
@@ -33,8 +32,8 @@ public class GetLatestDataModelImpl implements GetLatestDataModel {
                     }
 
                     @Override
-                    public void onNext(LatestData latestData) {
-                        callback.onSuccess(latestData);
+                    public void onNext(News news) {
+                        callback.onSuccess(news);
                     }
                 });
     }
