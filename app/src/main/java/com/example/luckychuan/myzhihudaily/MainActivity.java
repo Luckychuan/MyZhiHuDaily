@@ -10,14 +10,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.luckychuan.myzhihudaily.adapter.BannerAdapter;
+import com.example.luckychuan.myzhihudaily.adapter.ListViewAdapter;
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
 import com.example.luckychuan.myzhihudaily.bean.News;
 import com.example.luckychuan.myzhihudaily.bean.Story;
@@ -37,9 +40,17 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private GetLatestDataPresenter mLDPresenter;
     private GetOldDataPresenter mODPresenter;
-    private LatestData mLatestData;
+
+    private View mHeader;
+    private List<LatestData.TopStory> mTopStories = new ArrayList<>();
+    //banner上图片的url
+    List<String> mImageUrls = new ArrayList<>();
     //banner上的标题
     private TextView mTitleTextView;
+    List<String> mTitles = new ArrayList<>();
+
+    //ListView的数据
+    private List<News> mNewsList = new ArrayList<>();
     private ListView mMainListView;
 
     @Override
@@ -70,17 +81,18 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mLatestData = new LatestData();
+        mMainListView = (ListView) findViewById(R.id.list_view);
+        mMainListView.setAdapter(new ListViewAdapter(mNewsList));
 
-
+        initBanner();
 
 
     }
 
     private void test() {
-        mODPresenter = new GetOldDataPresenter(this);
-        mODPresenter.attach(this);
-        mODPresenter.requestData("20170420");
+//        mODPresenter = new GetOldDataPresenter(this);
+//        mODPresenter.attach(this);
+//        mODPresenter.requestData("20170420");
     }
 
     @Override
@@ -142,49 +154,42 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void updateUI(LatestData data) {
-//        // TODO: 2017/4/25
-//
-//        mLatestData.getTopStories().clear();
-//        mLatestData.getTopStories().addAll(data.getTopStories());
-//
-//        initBanner();
+
+        //更新listView的UI
+
+        //更新banner的UI
+
 
     }
 
     private void initBanner() {
-        RelativeLayout bannerLayout = (RelativeLayout) findViewById(R.id.banner_layout);
-        RollPagerView bannerView = (RollPagerView) findViewById(R.id.banner);
+         mHeader= LayoutInflater.from(this).inflate(R.layout.header_list_view,null);
+//        mBannerLayout.setVisibility(View.INVISIBLE);
+        RollPagerView bannerView = (RollPagerView) mHeader.findViewById(R.id.banner);
         bannerView.setPlayDelay(5000);
         bannerView.setAnimationDurtion(500);
 
         //设置banner的高度，使宽度和高度的比例为16：9
         int screenWidth = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getWidth();
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) bannerLayout.getLayoutParams();
+        ViewGroup group = (ViewGroup) mHeader.findViewById(R.id.banner_layout);
+        ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) group.getLayoutParams();
         params.height = screenWidth / 16 * 9;
-        bannerLayout.setLayoutParams(params);
+        group.setLayoutParams(params);
 
-        //获得新闻标题和图片url
-        final List<LatestData.TopStory> topStories = mLatestData.getTopStories();
-        List<String> imageUrls = new ArrayList<>();
-        List<String> titles = new ArrayList<>();
-        for (LatestData.TopStory topStory : topStories) {
-            imageUrls.add(topStory.getImageUrl());
-            titles.add(topStory.getTitle());
-        }
+        bannerView.setAdapter(new BannerAdapter(mImageUrls));
 
-        //设置标题的变化
-        mTitleTextView = (TextView) findViewById(R.id.top_story_title);
-        mTitleTextView.setText(titles.get(0));
+        mMainListView.addHeaderView(mHeader);
+
+
+        mTitleTextView = (TextView) mHeader.findViewById(R.id.top_story_title);
+
         final ViewPager bannerViewPager = bannerView.getViewPager();
-        bannerViewPager.addOnPageChangeListener(new BannerImageChangeListener(titles));
-
-        bannerView.setAdapter(new BannerAdapter(imageUrls));
-
+        bannerViewPager.addOnPageChangeListener(new BannerImageChangeListener());
 
         bannerView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Log.d(TAG, "onClick: " + topStories.get(position));
+                Log.d(TAG, "onClick: " + mTitles.get(position));
             }
         });
 
@@ -217,11 +222,6 @@ public class MainActivity extends AppCompatActivity
      */
     class BannerImageChangeListener implements ViewPager.OnPageChangeListener {
 
-        private List<String> list;
-
-        public BannerImageChangeListener(List<String> titles) {
-            list = titles;
-        }
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onPageSelected(int position) {
-            mTitleTextView.setText(list.get(position));
+            mTitleTextView.setText(mTitles.get(position));
         }
 
         @Override
