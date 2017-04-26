@@ -1,13 +1,13 @@
 package com.example.luckychuan.myzhihudaily.adapter;
 
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.luckychuan.myzhihudaily.MyRecyclerView;
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.News;
 
@@ -49,7 +49,7 @@ public class ListViewAdapter extends BaseAdapter implements StoryRecyclerAdapter
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_view_item, null);
             holder = new ViewHolder();
             holder.textView = (TextView) convertView.findViewById(R.id.item_date);
-            holder.recyclerView = (MyRecyclerView) convertView.findViewById(R.id.news_title_recycler);
+            holder.recyclerView = (RecyclerView) convertView.findViewById(R.id.news_title_recycler);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -58,7 +58,14 @@ public class ListViewAdapter extends BaseAdapter implements StoryRecyclerAdapter
         holder.textView.setText(news.getDate());
 
         //设置RecyclerView
-        holder.recyclerView.setLayoutManager(new LinearLayoutManager(parent.getContext()));
+        LinearLayoutManager manager = new LinearLayoutManager(parent.getContext(),LinearLayoutManager.VERTICAL,false){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        holder.recyclerView.setLayoutManager(manager);
+
         //当天的新闻
         if (position == 0) {
             mTodayAdapter = new StoryRecyclerAdapter(news.getStories(), this);
@@ -83,7 +90,7 @@ public class ListViewAdapter extends BaseAdapter implements StoryRecyclerAdapter
 
     class ViewHolder {
         TextView textView;
-        MyRecyclerView recyclerView;
+        RecyclerView recyclerView;
     }
 }
 
