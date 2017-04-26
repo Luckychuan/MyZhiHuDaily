@@ -35,13 +35,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,LatestDataView,OldDataView {
+        implements NavigationView.OnNavigationItemSelectedListener, LatestDataView, OldDataView {
 
     private static final String TAG = "MainActivity";
     private GetLatestDataPresenter mLDPresenter;
     private GetOldDataPresenter mODPresenter;
 
     private View mHeader;
+    private BannerAdapter mBannerAdapter;
     private List<LatestData.TopStory> mTopStories = new ArrayList<>();
     //banner上图片的url
     List<String> mImageUrls = new ArrayList<>();
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     //ListView的数据
     private List<News> mNewsList = new ArrayList<>();
     private ListView mMainListView;
+    private ListViewAdapter mListViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +84,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         mMainListView = (ListView) findViewById(R.id.list_view);
-        mMainListView.setAdapter(new ListViewAdapter(mNewsList));
+        mListViewAdapter = new ListViewAdapter(mNewsList);
+        mMainListView.setAdapter(mListViewAdapter);
+        mMainListView.setVisibility(View.INVISIBLE);
 
         initBanner();
 
@@ -156,15 +160,33 @@ public class MainActivity extends AppCompatActivity
     public void updateUI(LatestData data) {
 
         //更新listView的UI
+        mMainListView.setVisibility(View.VISIBLE);
+        mNewsList.clear();
+        mNewsList.add(new News(data.getDate(), data.getStories()));
+        mListViewAdapter.notifyDataSetChanged();
+
+
 
         //更新banner的UI
+        mHeader.setVisibility(View.VISIBLE);
+        mTopStories.clear();
+        mImageUrls.clear();
+        mTitles.clear();
+        mTopStories.addAll(data.getTopStories());
+        for (LatestData.TopStory topStory : mTopStories) {
+            mImageUrls.add(topStory.getImageUrl());
+            mTitles.add(topStory.getTitle());
+        }
+        //设置标题的变化
+        mTitleTextView.setText(mTitles.get(0));
+        mBannerAdapter.notifyDataSetChanged();
 
 
     }
 
     private void initBanner() {
-         mHeader= LayoutInflater.from(this).inflate(R.layout.header_list_view,null);
-//        mBannerLayout.setVisibility(View.INVISIBLE);
+        mHeader = LayoutInflater.from(this).inflate(R.layout.header_list_view, null);
+        mHeader.setVisibility(View.INVISIBLE);
         RollPagerView bannerView = (RollPagerView) mHeader.findViewById(R.id.banner);
         bannerView.setPlayDelay(5000);
         bannerView.setAnimationDurtion(500);
@@ -176,7 +198,8 @@ public class MainActivity extends AppCompatActivity
         params.height = screenWidth / 16 * 9;
         group.setLayoutParams(params);
 
-        bannerView.setAdapter(new BannerAdapter(mImageUrls));
+        mBannerAdapter = new BannerAdapter(mImageUrls);
+        bannerView.setAdapter(mBannerAdapter);
 
         mMainListView.addHeaderView(mHeader);
 
@@ -197,7 +220,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     @Override
     public void showErrorMsg(String error) {
         //由于知乎日报在首页并没有提示错误，此方法不写内容
@@ -212,8 +234,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void updateUI(News data) {
-        for(Story story:data.getStories()){
-            Log.d(TAG, "updateUI: "+story.toString());
+        for (Story story : data.getStories()) {
+            Log.d(TAG, "updateUI: " + story.toString());
         }
     }
 

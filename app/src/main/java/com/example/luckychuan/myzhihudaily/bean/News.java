@@ -7,6 +7,11 @@ import java.util.List;
  */
 public class News {
 
+    public News(String date,List<Story> stories) {
+        this.stories = stories;
+        this.date = date;
+    }
+
     private String date;
     private List<Story> stories;
 

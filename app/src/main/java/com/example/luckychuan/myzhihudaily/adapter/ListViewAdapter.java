@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.luckychuan.myzhihudaily.MyRecyclerView;
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.News;
 
@@ -61,6 +62,7 @@ public class ListViewAdapter extends BaseAdapter implements StoryRecyclerAdapter
         //当天的新闻
         if (position == 0) {
             mTodayAdapter = new StoryRecyclerAdapter(news.getStories(), this);
+            holder.recyclerView.setAdapter(mTodayAdapter);
         } else {
             StoryRecyclerAdapter adapter = new StoryRecyclerAdapter(news.getStories(), this);
         }

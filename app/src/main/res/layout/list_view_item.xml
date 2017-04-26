@@ -9,9 +9,9 @@
         android:layout_height="wrap_content"
         android:text="@string/testShort"/>
 
-    <android.support.v7.widget.RecyclerView
+    <com.example.luckychuan.myzhihudaily.MyRecyclerView
         android:id="@+id/news_title_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"></com.example.luckychuan.myzhihudaily.MyRecyclerView>
 
 </LinearLayout>

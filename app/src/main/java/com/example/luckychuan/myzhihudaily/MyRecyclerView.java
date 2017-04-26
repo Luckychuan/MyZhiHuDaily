@@ -1,4 +1,4 @@
-package com.example.luckychuan.myzhihudaily.adapter;
+package com.example.luckychuan.myzhihudaily;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
