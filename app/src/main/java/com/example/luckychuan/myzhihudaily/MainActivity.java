@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,7 +24,6 @@ import com.example.luckychuan.myzhihudaily.adapter.BannerAdapter;
 import com.example.luckychuan.myzhihudaily.adapter.ListViewAdapter;
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
 import com.example.luckychuan.myzhihudaily.bean.News;
-import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.presenter.GetLatestDataPresenter;
 import com.example.luckychuan.myzhihudaily.presenter.GetOldDataPresenter;
 import com.example.luckychuan.myzhihudaily.view.LatestDataView;
@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private GetLatestDataPresenter mLDPresenter;
     private GetOldDataPresenter mODPresenter;
+
+    //加载的最后一天新闻的日期
+    private String mLastDate;
 
     private View mHeader;
     private BannerAdapter mBannerAdapter;
@@ -66,8 +69,6 @@ public class MainActivity extends AppCompatActivity
         mLDPresenter.attach(this);
         mLDPresenter.requestData();
 
-        test();
-
     }
 
     private void initUI() {
@@ -83,20 +84,48 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mMainListView = (ListView) findViewById(R.id.list_view);
-        mListViewAdapter = new ListViewAdapter(mNewsList);
-        mMainListView.setAdapter(mListViewAdapter);
-        mMainListView.setVisibility(View.INVISIBLE);
+        initListView();
 
         initBanner();
 
 
     }
 
+    private void initListView() {
+        mMainListView = (ListView) findViewById(R.id.list_view);
+        mListViewAdapter = new ListViewAdapter(mNewsList);
+        mMainListView.setAdapter(mListViewAdapter);
+        mMainListView.setVisibility(View.INVISIBLE);
+
+        //当ListView滑动到最底端时加载前一天的新闻
+        mMainListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                switch (scrollState) {
+                    case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
+                        if (mMainListView.getLastVisiblePosition() == (view.getCount() - 1)) {
+                            Log.d("ListViewAdapter", "onScrollStateChanged: 滑动到最底");
+                            if (mODPresenter == null) {
+                                mODPresenter = new GetOldDataPresenter(MainActivity.this);
+                                mODPresenter.attach(MainActivity.this);
+                            }
+                            //加载前一天的新闻
+//                            mODPresenter.requestData(mLastDate);
+                        }
+                        break;
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
+
+    }
+
     private void test() {
-//        mODPresenter = new GetOldDataPresenter(this);
-//        mODPresenter.attach(this);
-//        mODPresenter.requestData("20170420");
+
     }
 
     @Override
@@ -156,15 +185,21 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * 更新今日新闻
+     *
+     * @param data
+     */
     @Override
     public void updateUI(LatestData data) {
+
+        mLastDate = data.getDate();
 
         //更新listView的UI
         mMainListView.setVisibility(View.VISIBLE);
         mNewsList.clear();
         mNewsList.add(new News(data.getDate(), data.getStories()));
         mListViewAdapter.notifyDataSetChanged();
-
 
 
         //更新banner的UI
@@ -181,6 +216,23 @@ public class MainActivity extends AppCompatActivity
         mTitleTextView.setText(mTitles.get(0));
         mBannerAdapter.notifyDataSetChanged();
 
+    }
+
+    /**
+     * 更新往日新闻
+     *
+     * @param data
+     */
+    @Override
+    public void updateUI(News data) {
+//        for (Story story : data.getStories()) {
+//            Log.d(TAG, "updateUI: " + story.toString());
+//        }
+
+        mLastDate = data.getDate();
+
+        mNewsList.add(data);
+        mListViewAdapter.notifyDataSetChanged();
 
     }
 
@@ -194,7 +246,7 @@ public class MainActivity extends AppCompatActivity
         //设置banner的高度，使宽度和高度的比例为16：9
         int screenWidth = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getWidth();
         ViewGroup group = (ViewGroup) mHeader.findViewById(R.id.banner_layout);
-        ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) group.getLayoutParams();
+        ViewGroup.LayoutParams params = group.getLayoutParams();
         params.height = screenWidth / 16 * 9;
         group.setLayoutParams(params);
 
@@ -229,15 +281,12 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         mLDPresenter.detach();
-        mODPresenter.detach();
-    }
-
-    @Override
-    public void updateUI(News data) {
-        for (Story story : data.getStories()) {
-            Log.d(TAG, "updateUI: " + story.toString());
+        if (mODPresenter != null) {
+            mODPresenter.detach();
         }
     }
+
+
 
     /**
      * 用于改变banner上的标题文字
