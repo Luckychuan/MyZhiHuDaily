@@ -2,13 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/banner_shadow">
+    >
 
     <ImageView
         android:id="@+id/top_story_imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/banner_shadow"/>
 
     <TextView
         android:layout_alignParentBottom="true"
