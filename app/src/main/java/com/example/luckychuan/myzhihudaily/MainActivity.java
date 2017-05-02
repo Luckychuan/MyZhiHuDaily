@@ -1,0 +1,198 @@
+package com.example.luckychuan.myzhihudaily;
+
+import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import com.example.luckychuan.myzhihudaily.adapter.LatestRecyclerAdapter;
+import com.example.luckychuan.myzhihudaily.bean.ItemBean;
+import com.example.luckychuan.myzhihudaily.bean.LatestData;
+import com.example.luckychuan.myzhihudaily.bean.News;
+import com.example.luckychuan.myzhihudaily.presenter.GetLatestDataPresenter;
+import com.example.luckychuan.myzhihudaily.presenter.GetOldDataPresenter;
+import com.example.luckychuan.myzhihudaily.view.LatestDataView;
+import com.example.luckychuan.myzhihudaily.view.OldDataView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, LatestDataView, OldDataView {
+
+    private static final String TAG = "MainActivity";
+    private GetLatestDataPresenter mLDPresenter;
+    private GetOldDataPresenter mODPresenter;
+
+    private List<ItemBean> mDataList;
+    private LatestRecyclerAdapter mAdapter;
+
+    //加载的最后一天新闻的日期
+    private String mLastDate;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        initUI();
+
+        mLDPresenter = new GetLatestDataPresenter(this);
+        mLDPresenter.attach(this);
+        mLDPresenter.requestData();
+
+        test();
+
+    }
+
+    private void initUI() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_main);
+        mDataList = new ArrayList<>();
+        mAdapter = new LatestRecyclerAdapter(mDataList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(mAdapter);
+
+    }
+
+    private void test() {
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    /**
+     * 更新今日新闻
+     *
+     * @param data
+     */
+    @Override
+    public void updateUI(LatestData data) {
+
+        mLastDate = data.getDate();
+
+        //添加banner数据
+        mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_BANNER, data.getTopStories()));
+
+        //添加日期
+        // TODO: 2017/5/2
+
+
+        //添加新闻列表
+//// TODO: 2017/5/2
+
+        mAdapter.notifyDataSetChanged();
+
+
+    }
+
+    /**
+     * 更新往日新闻
+     *
+     * @param data
+     */
+    @Override
+    public void updateUI(News data) {
+//        for (Story story : data.getStories()) {
+//            Log.d(TAG, "updateUI: " + story.toString());
+//        }
+
+        Log.d(TAG, "updateUI: " + data.getStories().size());
+
+//        mLastDate = data.getDate();
+//
+//        mNewsList.add(data);
+//        mListViewAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void showErrorMsg(String error) {
+        //由于知乎日报在首页并没有提示错误，此方法不写内容
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLDPresenter.detach();
+        if (mODPresenter != null) {
+            mODPresenter.detach();
+        }
+    }
+
+}
