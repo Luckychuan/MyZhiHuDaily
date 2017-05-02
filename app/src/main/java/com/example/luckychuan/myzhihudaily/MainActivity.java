@@ -17,6 +17,7 @@ import com.example.luckychuan.myzhihudaily.adapter.LatestRecyclerAdapter;
 import com.example.luckychuan.myzhihudaily.bean.ItemBean;
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
 import com.example.luckychuan.myzhihudaily.bean.News;
+import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.presenter.GetLatestDataPresenter;
 import com.example.luckychuan.myzhihudaily.presenter.GetOldDataPresenter;
 import com.example.luckychuan.myzhihudaily.view.LatestDataView;
@@ -146,15 +147,19 @@ public class MainActivity extends AppCompatActivity
 
         mLastDate = data.getDate();
 
+        mDataList.clear();
+
         //添加banner数据
         mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_BANNER, data.getTopStories()));
 
         //添加日期
-        // TODO: 2017/5/2
+        mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_DATE, data.getDate()));
 
 
         //添加新闻列表
-//// TODO: 2017/5/2
+        for(Story story:data.getStories()){
+            mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_STORY,story));
+        }
 
         mAdapter.notifyDataSetChanged();
 

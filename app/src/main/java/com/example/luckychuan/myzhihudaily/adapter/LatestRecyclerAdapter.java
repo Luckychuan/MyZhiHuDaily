@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.adapter.viewholder.BannerViewHolder;
 import com.example.luckychuan.myzhihudaily.adapter.viewholder.BaseViewHolder;
+import com.example.luckychuan.myzhihudaily.adapter.viewholder.DateViewHolder;
+import com.example.luckychuan.myzhihudaily.adapter.viewholder.StoryViewHolder;
 import com.example.luckychuan.myzhihudaily.bean.ItemBean;
 
 import java.util.List;
@@ -28,22 +30,20 @@ public class LatestRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         BaseViewHolder viewHolder = null;
+        LayoutInflater inflater =LayoutInflater.from(parent.getContext());
         if (viewType == TYPE_BANNER) {
-            viewHolder = new BannerViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.top_story_holder_layout, parent, false));
+            viewHolder = new BannerViewHolder(inflater.inflate(R.layout.top_story_holder_layout, parent, false));
         }else if(viewType == TYPE_DATE){
-            //// TODO: 2017/5/2
+            viewHolder = new DateViewHolder(inflater.inflate(R.layout.date_holder_layout, parent, false));
         }else{
-            // TODO: 2017/5/2
+            viewHolder = new StoryViewHolder(inflater.inflate(R.layout.story_holder_layout,parent,false));
         }
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        int type= mList.get(position).type;
-        if(type == TYPE_BANNER){
             holder.bindViewHolder(mList.get(position).bean);
-        }
     }
 
     @Override
