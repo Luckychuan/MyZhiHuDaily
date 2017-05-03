@@ -17,6 +17,7 @@ public class StoryViewHolder extends BaseViewHolder<Story> {
     private ImageView imageView;
     private TextView textView;
     private Context context;
+    private ImageView isMulti;
 
     public StoryViewHolder(View itemView) {
         super(itemView);
@@ -25,6 +26,8 @@ public class StoryViewHolder extends BaseViewHolder<Story> {
 
         imageView = (ImageView) itemView.findViewById(R.id.new_image);
         textView = (TextView) itemView.findViewById(R.id.new_title);
+
+        isMulti = (ImageView) itemView.findViewById(R.id.isMulti);
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,5 +54,12 @@ public class StoryViewHolder extends BaseViewHolder<Story> {
                 .placeholder(R.color.white)
                 .error(R.color.white)
                 .into(imageView);
+
+        if(bean.isMultiPic()){
+            isMulti.setVisibility(View.VISIBLE);
+        }else{
+            isMulti.setVisibility(View.INVISIBLE);
+        }
+
     }
 }

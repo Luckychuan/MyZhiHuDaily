@@ -10,6 +10,11 @@ public class Story {
     private String[] imageUrl;
     private String id;
     private String title;
+    @SerializedName("multipic")
+    private boolean isMultiPic;
+
+
+
 
     public String getImageUrl() {
         return imageUrl[0];
@@ -35,12 +40,11 @@ public class Story {
         this.title = title;
     }
 
-    @Override
-    public String toString() {
-        return "Story{" +
-                "imageUrl='" + imageUrl + '\'' +
-                ", id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                '}';
+    public boolean isMultiPic() {
+        return isMultiPic;
+    }
+
+    public void setIsMultipic(boolean isMultiPic) {
+        this.isMultiPic = isMultiPic;
     }
 }

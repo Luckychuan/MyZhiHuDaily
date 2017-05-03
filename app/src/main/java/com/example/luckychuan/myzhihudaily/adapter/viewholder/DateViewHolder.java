@@ -22,7 +22,7 @@ public class DateViewHolder extends BaseViewHolder<String> {
 
     @Override
     public void bindViewHolder(String bean) {
-        textView.setText(bean);
+        textView.setText(format(bean));
     }
 
     public String format(String date){
