@@ -5,6 +5,10 @@ import android.widget.TextView;
 
 import com.example.luckychuan.myzhihudaily.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * Created by Luckychuan on 2017/5/2.
@@ -25,9 +29,25 @@ public class DateViewHolder extends BaseViewHolder<String> {
         textView.setText(format(bean));
     }
 
-    public String format(String date){
+    public String format(String dateString){
+        String formatDate;
+        //获得今天的日期
+       String todayDate  = new SimpleDateFormat("yyyyMMdd").format(new Date());
 
-        return "今日新闻";
+        if(dateString.equals(todayDate)){
+            formatDate = "今日新闻";
+        }else{
+            Date date = null;
+            try {
+                 date = new SimpleDateFormat("yyyyMMdd").parse(dateString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            String week = new SimpleDateFormat("EEEE").format(date);
+            formatDate = dateString.substring(4,6)+"月" + dateString.substring(6,8)+"日 "+week;
+        }
+
+        return formatDate;
     }
 
 }

@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.luckychuan.myzhihudaily.adapter.LatestRecyclerAdapter;
 import com.example.luckychuan.myzhihudaily.bean.ItemBean;
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity
     //加载出来的最前一天新闻的日期
     private String mLastDate;
 
+    private Toolbar mToolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +61,12 @@ public class MainActivity extends AppCompatActivity
 
     private void initUI() {
         //初始化抽屉和标题
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -84,15 +88,36 @@ public class MainActivity extends AppCompatActivity
 
                 //判断RecyclerView是否滑动到最底端
                 //滑动过的距离=偏移量+当前view显示的区域
-               int total = recyclerView.computeVerticalScrollOffset()+recyclerView.computeVerticalScrollExtent();
-                if(total >= recyclerView.computeVerticalScrollRange()){
+                int total = recyclerView.computeVerticalScrollOffset() + recyclerView.computeVerticalScrollExtent();
+                if (total >= recyclerView.computeVerticalScrollRange()) {
                     //滑动到最底端
                     if (mODPresenter == null) {
                         mODPresenter = new GetOldDataPresenter(MainActivity.this);
                         mODPresenter.attach(MainActivity.this);
                     }
+                    //加载往日新闻
                     mODPresenter.requestData(mLastDate);
                 }
+
+
+                //获得RecyclerView当前可见的item的日期，给ToolBar设置日期
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                int position = manager.findFirstVisibleItemPosition();
+                if (position == 0) {
+                    mToolbar.setTitle("首页");
+                } else if (position == 1) {
+                    mToolbar.setTitle("今日新闻");
+                } else {
+                    View view = recyclerView.getChildAt(0);
+                    if (view == null) {
+                        Log.d(TAG, "onScrolled: view null");
+                    }
+                    TextView textView = (TextView) view.findViewById(R.id.date_text);
+                    if (textView != null) {
+                        mToolbar.setTitle(textView.getText().toString());
+                    }
+                }
+
 
             }
         });
@@ -181,8 +206,8 @@ public class MainActivity extends AppCompatActivity
 
 
         //添加新闻列表
-        for(Story story:data.getStories()){
-            mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_STORY,story));
+        for (Story story : data.getStories()) {
+            mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_STORY, story));
         }
 
         mAdapter.notifyDataSetChanged();
@@ -197,10 +222,6 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void updateUI(News data) {
-        for (Story story : data.getStories()) {
-            Log.d(TAG, "updateUI: " + story.toString());
-        }
-
 
         mLastDate = data.getDate();
 
@@ -209,8 +230,8 @@ public class MainActivity extends AppCompatActivity
 
 
         //添加新闻列表
-        for(Story story:data.getStories()){
-            mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_STORY,story));
+        for (Story story : data.getStories()) {
+            mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_STORY, story));
         }
 
         mAdapter.notifyDataSetChanged();
