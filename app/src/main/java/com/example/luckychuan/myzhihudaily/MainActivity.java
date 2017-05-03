@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity
     //加载出来的最前一天新闻的日期
     private String mLastDate;
 
-    private Toolbar mToolbar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +59,12 @@ public class MainActivity extends AppCompatActivity
 
     private void initUI() {
         //初始化抽屉和标题
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -104,9 +102,9 @@ public class MainActivity extends AppCompatActivity
                 LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 int position = manager.findFirstVisibleItemPosition();
                 if (position == 0) {
-                    mToolbar.setTitle("首页");
+                    toolbar.setTitle("首页");
                 } else if (position == 1) {
-                    mToolbar.setTitle("今日新闻");
+                    toolbar.setTitle("今日新闻");
                 } else {
                     View view = recyclerView.getChildAt(0);
                     if (view == null) {
@@ -114,7 +112,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     TextView textView = (TextView) view.findViewById(R.id.date_text);
                     if (textView != null) {
-                        mToolbar.setTitle(textView.getText().toString());
+                        toolbar.setTitle(textView.getText().toString());
                     }
                 }
 

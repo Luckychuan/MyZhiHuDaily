@@ -43,8 +43,7 @@ public class DateViewHolder extends BaseViewHolder<String> {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            String week = new SimpleDateFormat("EEEE").format(date);
-            formatDate = dateString.substring(4,6)+"月" + dateString.substring(6,8)+"日 "+week;
+            formatDate = new SimpleDateFormat("MM月dd日 EEEE").format(date);
         }
 
         return formatDate;
