@@ -29,7 +29,7 @@ public class LatestRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> 
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        BaseViewHolder viewHolder = null;
+        BaseViewHolder viewHolder;
         LayoutInflater inflater =LayoutInflater.from(parent.getContext());
         if (viewType == TYPE_BANNER) {
             viewHolder = new BannerViewHolder(inflater.inflate(R.layout.top_story_holder_layout, parent, false));
@@ -56,6 +56,11 @@ public class LatestRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> 
         return mList.size();
     }
 
+    /**
+     * 找到当前新闻列表的日期返回给Activity动态设置Toolbar标题
+     * @param position  当前view中第一个item的position
+     * @return
+     */
     public String getDate(int position) {
         for (int i = position; i >= 0; i--) {
             if(mList.get(i).type == TYPE_DATE){

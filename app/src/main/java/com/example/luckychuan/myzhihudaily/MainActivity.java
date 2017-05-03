@@ -1,14 +1,17 @@
 package com.example.luckychuan.myzhihudaily;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -35,6 +38,8 @@ public class MainActivity extends AppCompatActivity
 
     private List<ItemBean> mDataList;
     private LatestRecyclerAdapter mAdapter;
+    private SwipeRefreshLayout mRefreshLayout;
+    
 
     //加载出来的最前一天新闻的日期
     private String mLastDate;
@@ -100,28 +105,20 @@ public class MainActivity extends AppCompatActivity
                 LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 int position = manager.findFirstVisibleItemPosition();
                 String date = mAdapter.getDate(position);
-                if(date == null){
+                if (date == null) {
                     toolbar.setTitle("首页");
-                }else{
+                } else {
                     toolbar.setTitle(DateViewHolder.format(date));
                 }
-                
-//                if (position == 0) {
-//                    toolbar.setTitle("首页");
-//                } else if (position == 1) {
-//                    toolbar.setTitle("今日新闻");
-//                } else {
-//                    View view = recyclerView.getChildAt(0);
-//                    if (view == null) {
-//                        Log.d(TAG, "onScrolled: view null");
-//                    }
-//                    TextView textView = (TextView) view.findViewById(R.id.date_text);
-//                    if (textView != null) {
-//                        toolbar.setTitle(textView.getText().toString());
-//                    }
-//                }
+            }
+        });
 
-
+        mRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        mRefreshLayout.setColorSchemeColors(Color.parseColor("#03A9F4"));
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mLDPresenter.requestData();
             }
         });
 
@@ -196,6 +193,8 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void updateUI(LatestData data) {
+
+        mRefreshLayout.setRefreshing(false);
 
         mLastDate = data.getDate();
 
