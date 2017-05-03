@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity
     private List<ItemBean> mDataList;
     private LatestRecyclerAdapter mAdapter;
 
-    //加载的最后一天新闻的日期
+    //加载出来的最前一天新闻的日期
     private String mLastDate;
 
 
@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initUI() {
+        //初始化抽屉和标题
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -68,11 +69,34 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
+        //初始化RecyclerView
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_main);
         mDataList = new ArrayList<>();
         mAdapter = new LatestRecyclerAdapter(mDataList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                //判断RecyclerView是否滑动到最底端
+                //滑动过的距离=偏移量+当前view显示的区域
+               int total = recyclerView.computeVerticalScrollOffset()+recyclerView.computeVerticalScrollExtent();
+                if(total >= recyclerView.computeVerticalScrollRange()){
+                    //滑动到最底端
+                    if (mODPresenter == null) {
+                        mODPresenter = new GetOldDataPresenter(MainActivity.this);
+                        mODPresenter.attach(MainActivity.this);
+                    }
+                    mODPresenter.requestData(mLastDate);
+                }
+
+            }
+        });
+
 
     }
 
@@ -173,16 +197,23 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void updateUI(News data) {
-//        for (Story story : data.getStories()) {
-//            Log.d(TAG, "updateUI: " + story.toString());
-//        }
+        for (Story story : data.getStories()) {
+            Log.d(TAG, "updateUI: " + story.toString());
+        }
 
-        Log.d(TAG, "updateUI: " + data.getStories().size());
 
-//        mLastDate = data.getDate();
-//
-//        mNewsList.add(data);
-//        mListViewAdapter.notifyDataSetChanged();
+        mLastDate = data.getDate();
+
+        //添加日期
+        mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_DATE, data.getDate()));
+
+
+        //添加新闻列表
+        for(Story story:data.getStories()){
+            mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_STORY,story));
+        }
+
+        mAdapter.notifyDataSetChanged();
 
     }
 
