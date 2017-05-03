@@ -25,6 +25,7 @@ public class BannerViewHolder extends BaseViewHolder<List<LatestData.TopStory>> 
         AutoSlideViewPager viewPager = (AutoSlideViewPager) itemView.findViewById(R.id.viewPager);
         mAdapter = new TopStoryAdapter(mTopStories);
         viewPager.setAdapter(mAdapter);
+        viewPager.setAutoGlide();
         CirclePageIndicator indicator = (CirclePageIndicator) itemView.findViewById(R.id.pagerIndicator);
         indicator.setViewPager(viewPager);
 

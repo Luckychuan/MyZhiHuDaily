@@ -24,7 +24,7 @@ public class AutoSlideViewPager extends ViewPager {
     }
 
 
-    private void startGlide() {
+    public void setAutoGlide() {
         Observable.interval(5, 5, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
@@ -40,9 +40,5 @@ public class AutoSlideViewPager extends ViewPager {
                 });
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        startGlide();
-    }
+
 }
