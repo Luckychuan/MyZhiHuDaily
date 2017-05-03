@@ -9,13 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import com.example.luckychuan.myzhihudaily.adapter.LatestRecyclerAdapter;
+import com.example.luckychuan.myzhihudaily.adapter.viewholder.DateViewHolder;
 import com.example.luckychuan.myzhihudaily.bean.ItemBean;
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
 import com.example.luckychuan.myzhihudaily.bean.News;
@@ -101,20 +99,27 @@ public class MainActivity extends AppCompatActivity
                 //获得RecyclerView当前可见的item的日期，给ToolBar设置日期
                 LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 int position = manager.findFirstVisibleItemPosition();
-                if (position == 0) {
+                String date = mAdapter.getDate(position);
+                if(date == null){
                     toolbar.setTitle("首页");
-                } else if (position == 1) {
-                    toolbar.setTitle("今日新闻");
-                } else {
-                    View view = recyclerView.getChildAt(0);
-                    if (view == null) {
-                        Log.d(TAG, "onScrolled: view null");
-                    }
-                    TextView textView = (TextView) view.findViewById(R.id.date_text);
-                    if (textView != null) {
-                        toolbar.setTitle(textView.getText().toString());
-                    }
+                }else{
+                    toolbar.setTitle(DateViewHolder.format(date));
                 }
+                
+//                if (position == 0) {
+//                    toolbar.setTitle("首页");
+//                } else if (position == 1) {
+//                    toolbar.setTitle("今日新闻");
+//                } else {
+//                    View view = recyclerView.getChildAt(0);
+//                    if (view == null) {
+//                        Log.d(TAG, "onScrolled: view null");
+//                    }
+//                    TextView textView = (TextView) view.findViewById(R.id.date_text);
+//                    if (textView != null) {
+//                        toolbar.setTitle(textView.getText().toString());
+//                    }
+//                }
 
 
             }

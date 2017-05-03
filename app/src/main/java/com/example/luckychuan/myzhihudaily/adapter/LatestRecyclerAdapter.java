@@ -56,7 +56,14 @@ public class LatestRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> 
         return mList.size();
     }
 
-
+    public String getDate(int position) {
+        for (int i = position; i >= 0; i--) {
+            if(mList.get(i).type == TYPE_DATE){
+                return (String) mList.get(i).bean;
+            }
+        }
+        return null;
+    }
 
 
 }
