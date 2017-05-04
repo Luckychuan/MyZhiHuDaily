@@ -2,6 +2,7 @@ package com.example.luckychuan.myzhihudaily.retrofit;
 
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
 import com.example.luckychuan.myzhihudaily.bean.News;
+import com.example.luckychuan.myzhihudaily.bean.Theme;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -17,5 +18,8 @@ public interface ApiService {
 
     @GET("api/4/news/before/{date}")
     Observable<News> getOldData(@Path("date") String date);
+
+    @GET("api/4/themes")
+    Observable<Theme> getTheme();
 
 }

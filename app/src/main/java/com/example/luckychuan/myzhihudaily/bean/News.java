@@ -3,7 +3,7 @@ package com.example.luckychuan.myzhihudaily.bean;
 import java.util.List;
 
 /**
- * 新闻
+ * 往日新闻
  */
 public class News {
 

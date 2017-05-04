@@ -21,20 +21,24 @@ import com.example.luckychuan.myzhihudaily.bean.ItemBean;
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
 import com.example.luckychuan.myzhihudaily.bean.News;
 import com.example.luckychuan.myzhihudaily.bean.Story;
+import com.example.luckychuan.myzhihudaily.bean.Theme;
 import com.example.luckychuan.myzhihudaily.presenter.GetLatestDataPresenter;
 import com.example.luckychuan.myzhihudaily.presenter.GetOldDataPresenter;
+import com.example.luckychuan.myzhihudaily.presenter.GetThemePresenter;
 import com.example.luckychuan.myzhihudaily.view.LatestDataView;
 import com.example.luckychuan.myzhihudaily.view.OldDataView;
+import com.example.luckychuan.myzhihudaily.view.ThemeView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, LatestDataView, OldDataView {
+        implements NavigationView.OnNavigationItemSelectedListener, LatestDataView, OldDataView, ThemeView {
 
     private static final String TAG = "MainActivity";
     private GetLatestDataPresenter mLDPresenter;
     private GetOldDataPresenter mODPresenter;
+    private GetThemePresenter mThemePresenter;
 
     private List<ItemBean> mDataList;
     private LatestRecyclerAdapter mAdapter;
@@ -55,6 +59,10 @@ public class MainActivity extends AppCompatActivity
         mLDPresenter = new GetLatestDataPresenter(this);
         mLDPresenter.attach(this);
         mLDPresenter.requestData();
+
+        mThemePresenter = new GetThemePresenter(this);
+        mThemePresenter.attach(this);
+        mThemePresenter.requestData();
 
         test();
 
@@ -240,6 +248,18 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+    /**
+     * 更新抽屉item
+     * @param theme
+     */
+    @Override
+    public void setDrawerItem(Theme theme) {
+        for(Theme.Data data :theme.getDataList()){
+            Log.d(TAG, "setDrawerItem: "+data.toString());
+        }
+    }
+
     @Override
     public void showErrorMsg(String error) {
         //由于知乎日报在首页并没有提示错误，此方法不写内容
@@ -253,5 +273,6 @@ public class MainActivity extends AppCompatActivity
             mODPresenter.detach();
         }
     }
+
 
 }

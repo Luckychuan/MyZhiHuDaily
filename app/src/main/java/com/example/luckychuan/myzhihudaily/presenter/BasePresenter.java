@@ -5,11 +5,11 @@ import com.example.luckychuan.myzhihudaily.view.BaseView;
 /**
  * Created by Luckychuan on 2017/4/20.
  */
-public abstract  class BasePresenter<T extends BaseView> {
+public abstract  class BasePresenter {
 
-    public T mView;
+    public BaseView mView;
 
-    public void attach(T view){
+    public void attach(BaseView view){
         mView = view;
     }
 
