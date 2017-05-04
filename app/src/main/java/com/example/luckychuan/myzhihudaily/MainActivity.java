@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -43,7 +42,10 @@ public class MainActivity extends AppCompatActivity
     private List<ItemBean> mDataList;
     private LatestRecyclerAdapter mAdapter;
     private SwipeRefreshLayout mRefreshLayout;
-    
+
+    private NavigationView mNavigationView;
+    private List<Theme.Data> mDrawerItems;
+
 
     //加载出来的最前一天新闻的日期
     private String mLastDate;
@@ -79,8 +81,8 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
 
         //初始化RecyclerView
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         mRefreshLayout.setColorSchemeColors(Color.parseColor("#03A9F4"));
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -174,20 +176,17 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.first_page) {
+            //// TODO: 2017/5/4
+        } else {
+            for (Theme.Data data : mDrawerItems) {
+                    if(id == data.getId()){
+                        // TODO: 2017/5/4
+                        break;
+                    }
+            }
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -251,12 +250,15 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 更新抽屉item
+     *
      * @param theme
      */
     @Override
     public void setDrawerItem(Theme theme) {
-        for(Theme.Data data :theme.getDataList()){
-            Log.d(TAG, "setDrawerItem: "+data.toString());
+        mDrawerItems = theme.getDataList();
+        Menu menu = mNavigationView.getMenu();
+        for (Theme.Data data : mDrawerItems) {
+            menu.add(0, data.getId(), 0, data.getName());
         }
     }
 
@@ -269,6 +271,7 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         mLDPresenter.detach();
+        mThemePresenter.detach();
         if (mODPresenter != null) {
             mODPresenter.detach();
         }
