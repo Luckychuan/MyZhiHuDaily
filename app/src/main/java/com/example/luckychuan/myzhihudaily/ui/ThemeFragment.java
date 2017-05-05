@@ -3,15 +3,21 @@ package com.example.luckychuan.myzhihudaily.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.luckychuan.myzhihudaily.R;
+import com.example.luckychuan.myzhihudaily.adapter.ThemeRecyclerAdapter;
+import com.example.luckychuan.myzhihudaily.adapter.viewholder.ThemeHeaderViewHolder;
 import com.example.luckychuan.myzhihudaily.bean.ThemeContent;
 import com.example.luckychuan.myzhihudaily.presenter.GetThemeContentPresenter;
 import com.example.luckychuan.myzhihudaily.view.ThemeContentView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Luckychuan on 2017/5/5.
@@ -19,6 +25,10 @@ import com.example.luckychuan.myzhihudaily.view.ThemeContentView;
 public class ThemeFragment extends Fragment implements ThemeContentView {
 
     private GetThemeContentPresenter mPresenter;
+
+    private List<Object> mList;
+    private ThemeRecyclerAdapter mAdapter;
+
 
     private static final String TAG = "ThemeFragment";
     private int mId;
@@ -37,6 +47,13 @@ public class ThemeFragment extends Fragment implements ThemeContentView {
         mPresenter.attach(this);
         mPresenter.requestData((Integer) getArguments().get("id"));
 
+        mList = new ArrayList<>();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_theme);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter = new ThemeRecyclerAdapter(mList);
+        recyclerView.setAdapter(mAdapter);
+
+
     }
 
     public void refreshData(int id) {
@@ -53,7 +70,15 @@ public class ThemeFragment extends Fragment implements ThemeContentView {
 
     @Override
     public void updateUI(ThemeContent content) {
-        Log.d(TAG, "updateUI: " + content.toString());
+
+        mList.clear();
+
+        ThemeHeaderViewHolder.HeaderBean headerBean = new ThemeHeaderViewHolder.HeaderBean(content.getBackgroundUrl(),content.getDescription());
+        mList.add(headerBean);
+
+        mAdapter.notifyDataSetChanged();
+
+
     }
 
     @Override
