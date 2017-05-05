@@ -1,7 +1,8 @@
-package com.example.luckychuan.myzhihudaily.UI;
+package com.example.luckychuan.myzhihudaily.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -23,15 +24,15 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
 
+    private Toolbar mToolbar;
 
     private GetThemePresenter mThemePresenter;
     private NavigationView mNavigationView;
     private List<Theme.Data> mDrawerItems;
 
-    private FragmentTransaction mTransation;
+    private FragmentManager mManager;
     private HomeFragment mHomeFragment;
-
-
+    private ThemeFragment mThemeFragment;
 
 
     @Override
@@ -40,35 +41,34 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         //初始化抽屉和标题
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
 
-
+        //请求抽屉主题日报item
         mThemePresenter = new GetThemePresenter(this);
         mThemePresenter.attach(this);
         mThemePresenter.requestData();
 
-        mTransation = getSupportFragmentManager().beginTransaction();
+        //初始化fragment
+        mManager = getSupportFragmentManager();
+        FragmentTransaction transaction = mManager.beginTransaction();
         mHomeFragment = new HomeFragment();
         mHomeFragment.setRecyclerViewScrollListener(new HomeFragment.RecyclerViewScrollListener() {
             @Override
             public void changeToolbarTitle(String title) {
-                toolbar.setTitle(title);
+                mToolbar.setTitle(title);
             }
         });
-        mTransation.add(R.id.fragment_layout,mHomeFragment);
-        mTransation.commit();
-
-
-
+        transaction.add(R.id.fragment_layout, mHomeFragment);
+        transaction.commit();
 
 
     }
@@ -112,11 +112,18 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.first_page) {
-            //// TODO: 2017/5/4
+            FragmentTransaction transaction = mManager.beginTransaction();
+            if(mThemeFragment != null){
+                transaction.hide(mThemeFragment);
+            }
+            transaction.show(mHomeFragment);
+            transaction.commit();
+            mToolbar.setTitle("首页");
         } else {
             for (Theme.Data data : mDrawerItems) {
                 if (id == data.getId()) {
-                    // TODO: 2017/5/4
+                    mToolbar.setTitle(data.getName());
+                    showThemeFragment(id);
                     break;
                 }
             }
@@ -128,8 +135,16 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
-
+    private void showThemeFragment(int id) {
+        if (mThemeFragment == null) {
+            mThemeFragment = new ThemeFragment();
+            FragmentTransaction transaction = mManager.beginTransaction();
+            transaction.hide(mHomeFragment);
+            transaction.add(R.id.fragment_layout,mThemeFragment);
+            transaction.commit();
+        }
+        mThemeFragment.refreshData(id);
+    }
 
 
     /**

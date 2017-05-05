@@ -1,4 +1,4 @@
-package com.example.luckychuan.myzhihudaily.UI;
+package com.example.luckychuan.myzhihudaily.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
