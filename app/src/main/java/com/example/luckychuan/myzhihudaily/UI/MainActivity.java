@@ -138,12 +138,16 @@ public class MainActivity extends AppCompatActivity
     private void showThemeFragment(int id) {
         if (mThemeFragment == null) {
             mThemeFragment = new ThemeFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("id",id);
+            mThemeFragment.setArguments(bundle);
             FragmentTransaction transaction = mManager.beginTransaction();
             transaction.hide(mHomeFragment);
             transaction.add(R.id.fragment_layout,mThemeFragment);
             transaction.commit();
+        }else{
+            mThemeFragment.refreshData(id);
         }
-        mThemeFragment.refreshData(id);
     }
 
 

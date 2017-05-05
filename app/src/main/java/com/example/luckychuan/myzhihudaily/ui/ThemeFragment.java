@@ -9,11 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.luckychuan.myzhihudaily.R;
+import com.example.luckychuan.myzhihudaily.bean.ThemeContent;
+import com.example.luckychuan.myzhihudaily.presenter.GetThemeContentPresenter;
+import com.example.luckychuan.myzhihudaily.view.ThemeContentView;
 
 /**
  * Created by Luckychuan on 2017/5/5.
  */
-public class ThemeFragment extends Fragment {
+public class ThemeFragment extends Fragment implements ThemeContentView {
+
+    private GetThemeContentPresenter mPresenter;
 
     private static final String TAG = "ThemeFragment";
     private int mId;
@@ -27,14 +32,33 @@ public class ThemeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mPresenter = new GetThemeContentPresenter(this);
+        mPresenter.attach(this);
+        mPresenter.requestData((Integer) getArguments().get("id"));
+
     }
 
     public void refreshData(int id) {
-        Log.d(TAG, "refreshData: "+id);
         if (mId != id) {
-            mId=id;
-            //// TODO: 2017/5/5 请求数据
+            mId = id;
+            mPresenter.requestData(id);
         }
     }
 
+    @Override
+    public void showErrorMsg(String error) {
+
+    }
+
+    @Override
+    public void updateUI(ThemeContent content) {
+        Log.d(TAG, "updateUI: " + content.toString());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.detach();
+    }
 }
