@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.adapter.viewholder.BaseViewHolder;
+import com.example.luckychuan.myzhihudaily.adapter.viewholder.EditorViewHolder;
 import com.example.luckychuan.myzhihudaily.adapter.viewholder.StoryViewHolder;
 import com.example.luckychuan.myzhihudaily.adapter.viewholder.ThemeHeaderViewHolder;
 
@@ -21,20 +22,20 @@ public class ThemeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private static int TYPE_EDITOR = 1;
     private static int TYPE_STORY = 2;
 
-    public ThemeRecyclerAdapter(List<Object> list){
+    public ThemeRecyclerAdapter(List<Object> list) {
         mList = list;
     }
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        BaseViewHolder viewHolder = null;
-        LayoutInflater inflater =LayoutInflater.from(parent.getContext());
+        BaseViewHolder viewHolder;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == TYPE_HEATER) {
             viewHolder = new ThemeHeaderViewHolder(inflater.inflate(R.layout.theme_header_holder_layout, parent, false));
-        }else if(viewType == TYPE_EDITOR){
-            // TODO: 2017/5/5
-        }else{
-            viewHolder = new StoryViewHolder(inflater.inflate(R.layout.story_holder_layout,parent,false));
+        } else if (viewType == TYPE_EDITOR) {
+            viewHolder = new EditorViewHolder(inflater.inflate(R.layout.editor_holder_layout, parent, false));
+        } else {
+            viewHolder = new StoryViewHolder(inflater.inflate(R.layout.story_holder_layout, parent, false));
         }
         return viewHolder;
     }

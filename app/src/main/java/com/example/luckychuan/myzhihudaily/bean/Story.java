@@ -17,7 +17,11 @@ public class Story {
 
 
     public String getImageUrl() {
-        return imageUrl[0];
+        if(imageUrl !=null){
+            return imageUrl[0];
+        }else{
+            return  "";
+        }
     }
 
     public void setImageUrl(String[] imageUrl) {

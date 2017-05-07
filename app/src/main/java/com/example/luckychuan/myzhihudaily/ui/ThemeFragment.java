@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.adapter.ThemeRecyclerAdapter;
 import com.example.luckychuan.myzhihudaily.adapter.viewholder.ThemeHeaderViewHolder;
+import com.example.luckychuan.myzhihudaily.bean.Editor;
+import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.bean.ThemeContent;
 import com.example.luckychuan.myzhihudaily.presenter.GetThemeContentPresenter;
 import com.example.luckychuan.myzhihudaily.view.ThemeContentView;
@@ -75,6 +77,14 @@ public class ThemeFragment extends Fragment implements ThemeContentView {
 
         ThemeHeaderViewHolder.HeaderBean headerBean = new ThemeHeaderViewHolder.HeaderBean(content.getBackgroundUrl(),content.getDescription());
         mList.add(headerBean);
+
+        List<Editor> list = new ArrayList<>();
+        list.addAll(content.getEditors());
+        mList.add(list);
+
+        for (Story story : content.getStories()) {
+            mList.add(story);
+        }
 
         mAdapter.notifyDataSetChanged();
 

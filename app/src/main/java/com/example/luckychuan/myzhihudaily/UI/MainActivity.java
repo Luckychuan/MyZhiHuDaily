@@ -109,6 +109,8 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        item.setCheckable(true);
+        item.setChecked(true);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.first_page) {
@@ -136,16 +138,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showThemeFragment(int id) {
+        FragmentTransaction transaction = mManager.beginTransaction();
         if (mThemeFragment == null) {
             mThemeFragment = new ThemeFragment();
             Bundle bundle = new Bundle();
             bundle.putInt("id",id);
             mThemeFragment.setArguments(bundle);
-            FragmentTransaction transaction = mManager.beginTransaction();
             transaction.hide(mHomeFragment);
             transaction.add(R.id.fragment_layout,mThemeFragment);
             transaction.commit();
         }else{
+            transaction.hide(mHomeFragment);
+            transaction.show(mThemeFragment);
+            transaction.commit();
             mThemeFragment.refreshData(id);
         }
     }
@@ -161,7 +166,7 @@ public class MainActivity extends AppCompatActivity
         mDrawerItems = theme.getDataList();
         Menu menu = mNavigationView.getMenu();
         for (Theme.Data data : mDrawerItems) {
-            menu.add(0, data.getId(), 0, data.getName());
+            menu.add(R.id.group, data.getId(), 0, data.getName());
         }
     }
 
