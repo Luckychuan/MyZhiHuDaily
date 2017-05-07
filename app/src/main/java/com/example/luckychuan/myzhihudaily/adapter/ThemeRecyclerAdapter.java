@@ -1,5 +1,7 @@
 package com.example.luckychuan.myzhihudaily.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -9,6 +11,8 @@ import com.example.luckychuan.myzhihudaily.adapter.viewholder.BaseViewHolder;
 import com.example.luckychuan.myzhihudaily.adapter.viewholder.EditorViewHolder;
 import com.example.luckychuan.myzhihudaily.adapter.viewholder.StoryViewHolder;
 import com.example.luckychuan.myzhihudaily.adapter.viewholder.ThemeHeaderViewHolder;
+import com.example.luckychuan.myzhihudaily.bean.Story;
+import com.example.luckychuan.myzhihudaily.ui.StoryActivity;
 
 import java.util.List;
 
@@ -27,7 +31,7 @@ public class ThemeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
     @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public BaseViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         BaseViewHolder viewHolder;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == TYPE_HEATER) {
@@ -36,6 +40,16 @@ public class ThemeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             viewHolder = new EditorViewHolder(inflater.inflate(R.layout.editor_holder_layout, parent, false));
         } else {
             viewHolder = new StoryViewHolder(inflater.inflate(R.layout.story_holder_layout, parent, false));
+            ((StoryViewHolder)viewHolder).setOnClickListener(new StoryViewHolder.OnItemClickListener() {
+                @Override
+                public void OnItemClick(int position) {
+                    String id = ((Story)mList.get(position)).getId();
+                    Context context = parent.getContext();
+                    Intent intent = new Intent(context, StoryActivity.class);
+                    intent.putExtra("story_id",id);
+                    context.startActivity(intent);
+                }
+            });
         }
         return viewHolder;
     }

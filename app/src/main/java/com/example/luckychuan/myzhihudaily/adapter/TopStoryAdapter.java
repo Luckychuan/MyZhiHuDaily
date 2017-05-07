@@ -1,5 +1,7 @@
 package com.example.luckychuan.myzhihudaily.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
+import com.example.luckychuan.myzhihudaily.ui.StoryActivity;
 
 import java.util.List;
 
@@ -36,13 +39,13 @@ public class TopStoryAdapter extends PagerAdapter {
 
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(final ViewGroup container, int position) {
         View view = LayoutInflater.from(container.getContext()).inflate(R.layout.pager_adapter_item, null);
 
         ImageView imageView = (ImageView) view.findViewById(R.id.top_story_imageView);
         TextView textView = (TextView) view.findViewById(R.id.top_story_textView);
 
-        LatestData.TopStory topStory = mTopStoryList.get(position);
+        final LatestData.TopStory topStory = mTopStoryList.get(position);
 
         Glide.with(container.getContext())
                 .load(topStory.getImageUrl())
@@ -55,7 +58,10 @@ public class TopStoryAdapter extends PagerAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Context context = container.getContext();
+                Intent intent = new Intent(context, StoryActivity.class);
+                intent.putExtra("story_id",topStory.getId());
+                context.startActivity(intent);
             }
         });
 
@@ -67,4 +73,5 @@ public class TopStoryAdapter extends PagerAdapter {
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
     }
+
 }

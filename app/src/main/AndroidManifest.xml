@@ -23,6 +23,10 @@
             </intent-filter>
             </activity>
 
+        <activity android:name=".ui.StoryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
     </application>
 
 </manifest>

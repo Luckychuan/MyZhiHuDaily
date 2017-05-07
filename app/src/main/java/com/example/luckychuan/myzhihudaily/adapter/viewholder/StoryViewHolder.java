@@ -18,6 +18,7 @@ public class StoryViewHolder extends BaseViewHolder<Story> {
     private TextView textView;
     private Context context;
     private ImageView isMulti;
+    private OnItemClickListener listener;
 
     public StoryViewHolder(View itemView) {
         super(itemView);
@@ -32,7 +33,7 @@ public class StoryViewHolder extends BaseViewHolder<Story> {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                listener.OnItemClick(getLayoutPosition());
             }
         });
 
@@ -44,6 +45,11 @@ public class StoryViewHolder extends BaseViewHolder<Story> {
         });
 
     }
+
+    public void setOnClickListener(OnItemClickListener listener){
+        this.listener = listener;
+    }
+
 
     @Override
     public void bindViewHolder(Story bean) {
@@ -62,4 +68,9 @@ public class StoryViewHolder extends BaseViewHolder<Story> {
         }
 
     }
+
+  public   interface OnItemClickListener{
+        void OnItemClick(int position);
+    }
+
 }
