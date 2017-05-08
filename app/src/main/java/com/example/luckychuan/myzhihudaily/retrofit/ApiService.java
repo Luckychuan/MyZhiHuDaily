@@ -2,6 +2,7 @@ package com.example.luckychuan.myzhihudaily.retrofit;
 
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
 import com.example.luckychuan.myzhihudaily.bean.News;
+import com.example.luckychuan.myzhihudaily.bean.StoryContent;
 import com.example.luckychuan.myzhihudaily.bean.Theme;
 import com.example.luckychuan.myzhihudaily.bean.ThemeContent;
 
@@ -40,5 +41,13 @@ public interface ApiService {
 //    使用在 主题日报列表查看 中获得需要查看的主题日报的 id，拼接在 http://news-at.zhihu.com/api/4/theme/ 后，得到对应主题日报 JSON 格式的内容
     @GET("api/4/theme/{id}")
     Observable<ThemeContent> getThemeContent(@Path("id") int id);
+
+
+    //    消息内容获取与离线下载
+//    URL: http://news-at.zhihu.com/api/4/news/3892357
+//    使用在 最新消息 中获得的 id，拼接在 http://news-at.zhihu.com/api/4/news/ 后，得到对应消息 JSON 格式的内容
+    @GET("api/4/news/{id}")
+    Observable<StoryContent> getStoryContent(@Path("id") int id);
+
 
 }
