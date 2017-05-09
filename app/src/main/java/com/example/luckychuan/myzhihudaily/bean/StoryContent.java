@@ -20,6 +20,7 @@ public class StoryContent {
     private List<Recommender> recommenders;
     private int id;
     private List<String> css;
+    private List<String> js;
 
 
     public class Recommender{
@@ -74,6 +75,14 @@ public class StoryContent {
 
     public void setShareUrl(String shareUrl) {
         this.shareUrl = shareUrl;
+    }
+
+    public void setJs(List<String> js) {
+        this.js = js;
+    }
+
+    public List<String> getJs() {
+        return js;
     }
 
     public List<Recommender> getRecommenders() {
