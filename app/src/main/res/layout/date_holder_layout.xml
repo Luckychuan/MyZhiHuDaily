@@ -10,15 +10,11 @@
         android:text="@string/testShort"
         android:textColor="@color/secondaryText"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="4dp"
         android:textSize="14sp" />
 
-    <ImageView
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#0c000000" />
+
 
 
 </RelativeLayout>

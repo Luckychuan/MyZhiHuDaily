@@ -1,6 +1,7 @@
 package com.example.luckychuan.myzhihudaily.presenter;
 
 import com.example.luckychuan.myzhihudaily.bean.StoryContent;
+import com.example.luckychuan.myzhihudaily.bean.StoryExtra;
 import com.example.luckychuan.myzhihudaily.model.Callback;
 import com.example.luckychuan.myzhihudaily.model.GetStoryContentModel;
 import com.example.luckychuan.myzhihudaily.model.GetStoryContentModelImpl;
@@ -19,7 +20,7 @@ public class GetStoryContentPresenter extends BasePresenter {
         mModel = new GetStoryContentModelImpl();
     }
 
-    public void requestData(int id){
+    public void requestStoryContent(int id){
         mModel.getStoryContent(id, new Callback<StoryContent>() {
             @Override
             public void onSuccess(StoryContent bean) {
@@ -29,6 +30,20 @@ public class GetStoryContentPresenter extends BasePresenter {
             @Override
             public void onFail(String errorMsg) {
                 mView.showErrorMsg(errorMsg);
+            }
+        });
+    }
+
+    public void requestStoryExtra(int id){
+        mModel.getStoryExtra(id, new Callback<StoryExtra>() {
+            @Override
+            public void onSuccess(StoryExtra bean) {
+                mView.updateToolbar(bean);
+            }
+
+            @Override
+            public void onFail(String errorMsg) {
+
             }
         });
     }

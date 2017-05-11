@@ -1,9 +1,12 @@
 package com.example.luckychuan.myzhihudaily.ui;
 
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -14,8 +17,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.StoryContent;
+import com.example.luckychuan.myzhihudaily.bean.StoryExtra;
 import com.example.luckychuan.myzhihudaily.presenter.GetStoryContentPresenter;
 import com.example.luckychuan.myzhihudaily.view.StoryContentView;
+import com.example.luckychuan.myzhihudaily.widget.TextActionProvider;
 
 /**
  * 新闻的内容
@@ -26,6 +31,7 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
     private GetStoryContentPresenter mPresenter;
 
     private WebView mWebView;
+    private Toolbar mToolbar;
 
 
     @Override
@@ -38,10 +44,19 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
 
         mPresenter = new GetStoryContentPresenter(this);
         mPresenter.attach(this);
-        mPresenter.requestData(Integer.parseInt(id));
+        mPresenter.requestStoryContent(Integer.parseInt(id));
+        mPresenter.requestStoryExtra(Integer.parseInt(id));
 
-        Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar_detail);
-        setSupportActionBar(toolBar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_detail);
+        mToolbar.setTitle("");
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         initWebView();
 
@@ -82,10 +97,29 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
         title.setText(content.getTitle());
         source.setText(content.getImageSource());
 
-        String formatCss= String.format( "<link href=\"%s\" rel=\"stylesheet\" type=\"text/css\"/>",content.getCss().get(0));
-        String formatHtml = content.getBody().replace( "class=\"img-place-holder\"", "class=\"img-place-holder-ignored\"");
-        mWebView.loadData(formatCss+formatHtml, "text/html; charset=UTF-8", null);
+        String formatCss = String.format("<link href=\"%s\" rel=\"stylesheet\" type=\"text/css\"/>", content.getCss().get(0));
+        String formatHtml = content.getBody().replace("class=\"img-place-holder\"", "class=\"img-place-holder-ignored\"");
+        mWebView.loadData(formatCss + formatHtml, "text/html; charset=UTF-8", null);
 
+    }
+
+    @Override
+    public void updateToolbar(StoryExtra extra) {
+        Log.d(TAG, "updateToolbar: "+extra.toString());
+        mToolbar.inflateMenu(R.menu.story_detail);
+        Menu menu = mToolbar.getMenu();
+
+        TextActionProvider number = (TextActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.love));
+        number.setResource(R.drawable.praise, extra.getPopularity());
+
+        TextActionProvider comment = (TextActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.comment));
+        comment.setResource(R.drawable.comment, extra.getComments());
+        comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
 
@@ -94,4 +128,6 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
         super.onDestroy();
         mPresenter.detach();
     }
+
+
 }

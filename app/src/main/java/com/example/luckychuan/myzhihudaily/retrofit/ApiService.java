@@ -3,6 +3,7 @@ package com.example.luckychuan.myzhihudaily.retrofit;
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
 import com.example.luckychuan.myzhihudaily.bean.News;
 import com.example.luckychuan.myzhihudaily.bean.StoryContent;
+import com.example.luckychuan.myzhihudaily.bean.StoryExtra;
 import com.example.luckychuan.myzhihudaily.bean.Theme;
 import com.example.luckychuan.myzhihudaily.bean.ThemeContent;
 
@@ -48,6 +49,13 @@ public interface ApiService {
 //    使用在 最新消息 中获得的 id，拼接在 http://news-at.zhihu.com/api/4/news/ 后，得到对应消息 JSON 格式的内容
     @GET("api/4/news/{id}")
     Observable<StoryContent> getStoryContent(@Path("id") int id);
+
+//    新闻额外信息
+//    URL:  http://news-at.zhihu.com/api/4/story-extra/3892357
+//    输入新闻的ID，获取对应新闻的额外信息，如评论数量，所获的『赞』的数量。
+    @GET("api/4/story-extra/{id}")
+    Observable<StoryExtra> getStoryExtra(@Path("id") int id);
+
 
 
 }

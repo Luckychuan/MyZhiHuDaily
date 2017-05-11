@@ -1,6 +1,7 @@
 package com.example.luckychuan.myzhihudaily.model;
 
 import com.example.luckychuan.myzhihudaily.bean.StoryContent;
+import com.example.luckychuan.myzhihudaily.bean.StoryExtra;
 import com.example.luckychuan.myzhihudaily.retrofit.ApiService;
 import com.example.luckychuan.myzhihudaily.retrofit.RetrofitUtil;
 
@@ -35,6 +36,33 @@ public class GetStoryContentModelImpl implements GetStoryContentModel {
                     @Override
                     public void onNext(StoryContent content) {
                         callback.onSuccess(content);
+                    }
+                });
+    }
+
+    @Override
+    public void getStoryExtra(int id, final Callback<StoryExtra> callback) {
+        RetrofitUtil.getInstance()
+                .getRetrofit()
+                .create(ApiService.class)
+                .getStoryExtra(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<StoryExtra>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onFail(e.getMessage());
+                    }
+
+
+                    @Override
+                    public void onNext(StoryExtra extra) {
+                        callback.onSuccess(extra);
                     }
                 });
     }
