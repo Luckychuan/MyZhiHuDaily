@@ -25,6 +25,8 @@ public class LatestData {
         private String imageUrl;
         private String id;
         private String title;
+        @SerializedName("multipic")
+        private boolean isMultiPic;
 
         public String getImageUrl() {
             return imageUrl;
@@ -36,6 +38,14 @@ public class LatestData {
 
         public String getId() {
             return id;
+        }
+
+        public boolean isMultiPic() {
+            return isMultiPic;
+        }
+
+        public void setIsMultipic(boolean isMultiPic) {
+            this.isMultiPic = isMultiPic;
         }
 
         public void setId(String id) {

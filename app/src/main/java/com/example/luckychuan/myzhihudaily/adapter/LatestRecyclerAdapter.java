@@ -44,10 +44,10 @@ public class LatestRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> 
             ((StoryViewHolder)viewHolder).setOnClickListener(new StoryViewHolder.OnItemClickListener() {
                 @Override
                 public void OnItemClick(int position) {
-                    String id = ((Story)mList.get(position).bean).getId();
+                    Story story = ((Story)mList.get(position).bean);
                     Context context = parent.getContext();
                     Intent intent = new Intent(context, StoryActivity.class);
-                    intent.putExtra("story_id",id);
+                    intent.putExtra("story",story);
                     context.startActivity(intent);
                 }
             });

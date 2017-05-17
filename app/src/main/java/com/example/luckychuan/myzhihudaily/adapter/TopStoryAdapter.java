@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
+import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.ui.StoryActivity;
 
 import java.util.List;
@@ -60,7 +61,15 @@ public class TopStoryAdapter extends PagerAdapter {
             public void onClick(View v) {
                 Context context = container.getContext();
                 Intent intent = new Intent(context, StoryActivity.class);
-                intent.putExtra("story_id",topStory.getId());
+
+                Story story = new Story();
+                story.setStoryId(topStory.getId());
+                story.setImageUrl(new String[]{topStory.getImageUrl()});
+                story.setTitle(topStory.getTitle());
+                story.setMultiPic(topStory.isMultiPic());
+
+                intent.putExtra("story",story);
+
                 context.startActivity(intent);
             }
         });

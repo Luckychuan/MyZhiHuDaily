@@ -2,16 +2,36 @@ package com.example.luckychuan.myzhihudaily.bean;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.litepal.crud.DataSupport;
+
+import java.io.Serializable;
+import java.util.Arrays;
+
 /**
  * RecyclerView的新闻的新闻和标题
  */
-public class Story {
+public class Story extends DataSupport implements Serializable{
     @SerializedName("images")
     private String[] imageUrl;
-    private String id;
+    @SerializedName("id")
+    private String storyId;
     private String title;
     @SerializedName("multipic")
     private boolean isMultiPic;
+
+    @Override
+    public String toString() {
+        return "Story{" +
+                "imageUrl=" + Arrays.toString(imageUrl) +
+                ", storyId='" + storyId + '\'' +
+                ", title='" + title + '\'' +
+                ", isMultiPic=" + isMultiPic +
+                ", id=" + id +
+                '}';
+    }
+
+    @SerializedName("litepalId")
+    private long id;
 
 
 
@@ -28,12 +48,12 @@ public class Story {
         this.imageUrl = imageUrl;
     }
 
-    public String getId() {
-        return id;
+    public String getStoryId() {
+        return storyId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setStoryId(String id) {
+        this.storyId = id;
     }
 
     public String getTitle() {
@@ -48,7 +68,7 @@ public class Story {
         return isMultiPic;
     }
 
-    public void setIsMultipic(boolean isMultiPic) {
+    public void setMultiPic(boolean isMultiPic) {
         this.isMultiPic = isMultiPic;
     }
 }

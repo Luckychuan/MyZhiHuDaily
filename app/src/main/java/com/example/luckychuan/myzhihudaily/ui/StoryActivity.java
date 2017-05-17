@@ -1,11 +1,13 @@
 package com.example.luckychuan.myzhihudaily.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -13,14 +15,21 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.luckychuan.myzhihudaily.R;
+import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.bean.StoryContent;
 import com.example.luckychuan.myzhihudaily.bean.StoryExtra;
 import com.example.luckychuan.myzhihudaily.presenter.GetStoryContentPresenter;
 import com.example.luckychuan.myzhihudaily.view.StoryContentView;
 import com.example.luckychuan.myzhihudaily.widget.TextActionProvider;
+
+import org.litepal.crud.DataSupport;
+import org.litepal.tablemanager.Connector;
+
+import java.util.List;
 
 /**
  * 新闻的内容
@@ -33,19 +42,21 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
     private WebView mWebView;
     private Toolbar mToolbar;
 
+    private Story mStory;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_detail);
 
-        String id = getIntent().getStringExtra("story_id");
-        Log.d(TAG, "onCreate: " + id);
+        mStory = (Story) getIntent().getSerializableExtra("story");
+              int id = Integer.parseInt(mStory.getStoryId());
 
         mPresenter = new GetStoryContentPresenter(this);
         mPresenter.attach(this);
-        mPresenter.requestStoryContent(Integer.parseInt(id));
-        mPresenter.requestStoryExtra(Integer.parseInt(id));
+        mPresenter.requestStoryContent(id);
+        mPresenter.requestStoryExtra(id);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar_detail);
         mToolbar.setTitle("");
@@ -59,6 +70,15 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
         });
 
         initWebView();
+
+
+        //创建收藏的数据库
+        Connector.getDatabase();
+        for(Story story:findAll()){
+            Log.d(TAG, "onCreate: "+story.toString());
+        }
+
+
 
     }
 
@@ -109,6 +129,11 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
         mToolbar.inflateMenu(R.menu.story_detail);
         Menu menu = mToolbar.getMenu();
 
+        MenuItem favorite = menu.findItem(R.id.favorite);
+        if(isStoryExist()){
+            favorite.setIcon(R.drawable.favorite_yellow);
+        }
+
         TextActionProvider number = (TextActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.love));
         number.setResource(R.drawable.praise, extra.getPopularity());
 
@@ -122,6 +147,35 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.share:
+                Toast.makeText(this, "尚未开发", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.favorite:
+                if(isStoryExist()){
+                    item.setIcon(R.drawable.favorite);
+                    //从数据库中移除
+                    DataSupport.deleteAll(Story.class, "storyId = ?", mStory.getStoryId()+"");
+                }else{
+                    item.setIcon(R.drawable.favorite_yellow);
+                    //添加到数据库中
+                    Story story = new Story();
+                    story.setMultiPic(mStory.isMultiPic());
+                    story.setTitle(mStory.getTitle());
+                    story.setImageUrl(new String[]{mStory.getImageUrl()});
+                    story.setStoryId(mStory.getStoryId());
+                    boolean result = story.save();
+                    Log.d(TAG, "onOptionsItemSelected: "+result);
+                }
+                break;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -129,5 +183,23 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
         mPresenter.detach();
     }
 
+
+    /**
+     * //从数据库查询当前story是否已存在数据库中
+     * @return
+     */
+    private boolean isStoryExist(){
+        List<Story> storyList = DataSupport.where("storyId =?",mStory.getStoryId()+"").find(Story.class);
+        boolean isExist = false;
+        if(storyList.size() > 0){
+            isExist = true;
+        }
+        Log.d(TAG, "isStoryExist: "+isExist);
+        return isExist;
+    }
+
+    private List<Story> findAll(){
+        return DataSupport.findAll(Story.class);
+    }
 
 }

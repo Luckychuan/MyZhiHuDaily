@@ -1,11 +1,12 @@
 package com.example.luckychuan.myzhihudaily.retrofit;
 
-import android.app.Application;
+
+import org.litepal.LitePalApplication;
 
 /**
  * Created by Luckychuan on 2017/4/20.
  */
-public class RetrofitApplication extends Application {
+public class RetrofitApplication extends LitePalApplication {
 
     @Override
     public void onCreate() {

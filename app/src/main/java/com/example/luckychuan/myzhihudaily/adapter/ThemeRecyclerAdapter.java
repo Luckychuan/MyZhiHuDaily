@@ -43,10 +43,10 @@ public class ThemeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             ((StoryViewHolder)viewHolder).setOnClickListener(new StoryViewHolder.OnItemClickListener() {
                 @Override
                 public void OnItemClick(int position) {
-                    String id = ((Story)mList.get(position)).getId();
+                    Story story = ((Story)mList.get(position));
                     Context context = parent.getContext();
                     Intent intent = new Intent(context, StoryActivity.class);
-                    intent.putExtra("story_id",id);
+                    intent.putExtra("story",story);
                     context.startActivity(intent);
                 }
             });
