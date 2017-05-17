@@ -10,30 +10,13 @@ import java.util.Arrays;
 /**
  * RecyclerView的新闻的新闻和标题
  */
-public class Story extends DataSupport implements Serializable{
+public class Story implements Serializable{
     @SerializedName("images")
     private String[] imageUrl;
-    @SerializedName("id")
-    private String storyId;
+    private String id;
     private String title;
     @SerializedName("multipic")
     private boolean isMultiPic;
-
-    @Override
-    public String toString() {
-        return "Story{" +
-                "imageUrl=" + Arrays.toString(imageUrl) +
-                ", storyId='" + storyId + '\'' +
-                ", title='" + title + '\'' +
-                ", isMultiPic=" + isMultiPic +
-                ", id=" + id +
-                '}';
-    }
-
-    @SerializedName("litepalId")
-    private long id;
-
-
 
 
     public String getImageUrl() {
@@ -48,12 +31,12 @@ public class Story extends DataSupport implements Serializable{
         this.imageUrl = imageUrl;
     }
 
-    public String getStoryId() {
-        return storyId;
+    public String getId() {
+        return id;
     }
 
-    public void setStoryId(String id) {
-        this.storyId = id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {

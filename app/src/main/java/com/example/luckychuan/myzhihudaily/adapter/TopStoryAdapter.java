@@ -63,7 +63,7 @@ public class TopStoryAdapter extends PagerAdapter {
                 Intent intent = new Intent(context, StoryActivity.class);
 
                 Story story = new Story();
-                story.setStoryId(topStory.getId());
+                story.setId(topStory.getId());
                 story.setImageUrl(new String[]{topStory.getImageUrl()});
                 story.setTitle(topStory.getTitle());
                 story.setMultiPic(topStory.isMultiPic());

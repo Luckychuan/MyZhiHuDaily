@@ -2,6 +2,7 @@ package com.example.luckychuan.myzhihudaily.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +23,7 @@ import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.bean.StoryContent;
 import com.example.luckychuan.myzhihudaily.bean.StoryExtra;
+import com.example.luckychuan.myzhihudaily.bean.StoryLite;
 import com.example.luckychuan.myzhihudaily.presenter.GetStoryContentPresenter;
 import com.example.luckychuan.myzhihudaily.view.StoryContentView;
 import com.example.luckychuan.myzhihudaily.widget.TextActionProvider;
@@ -51,7 +53,7 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
         setContentView(R.layout.activity_story_detail);
 
         mStory = (Story) getIntent().getSerializableExtra("story");
-              int id = Integer.parseInt(mStory.getStoryId());
+              int id = Integer.parseInt(mStory.getId());
 
         mPresenter = new GetStoryContentPresenter(this);
         mPresenter.attach(this);
@@ -74,7 +76,8 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
 
         //创建收藏的数据库
         Connector.getDatabase();
-        for(Story story:findAll()){
+ //       DataSupport.deleteAll(StoryLite.class);
+        for(StoryLite story:findAll()){
             Log.d(TAG, "onCreate: "+story.toString());
         }
 
@@ -104,6 +107,10 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
 
     @Override
     public void updateUI(StoryContent content) {
+
+        CoordinatorLayout layout = (CoordinatorLayout) findViewById(R.id.story_detail_layout);
+        layout.setVisibility(View.VISIBLE);
+
         ImageView imageView = (ImageView) findViewById(R.id.image_detail);
         TextView title = (TextView) findViewById(R.id.title_detail);
         TextView source = (TextView) findViewById(R.id.source_detail);
@@ -157,15 +164,15 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
                 if(isStoryExist()){
                     item.setIcon(R.drawable.favorite);
                     //从数据库中移除
-                    DataSupport.deleteAll(Story.class, "storyId = ?", mStory.getStoryId()+"");
+                    DataSupport.deleteAll(StoryLite.class, "storyId = ?", mStory.getId()+"");
                 }else{
                     item.setIcon(R.drawable.favorite_yellow);
                     //添加到数据库中
-                    Story story = new Story();
+                    StoryLite story = new StoryLite();
                     story.setMultiPic(mStory.isMultiPic());
                     story.setTitle(mStory.getTitle());
-                    story.setImageUrl(new String[]{mStory.getImageUrl()});
-                    story.setStoryId(mStory.getStoryId());
+                    story.setImageUrl(mStory.getImageUrl());
+                    story.setStoryId(mStory.getId());
                     boolean result = story.save();
                     Log.d(TAG, "onOptionsItemSelected: "+result);
                 }
@@ -189,7 +196,7 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
      * @return
      */
     private boolean isStoryExist(){
-        List<Story> storyList = DataSupport.where("storyId =?",mStory.getStoryId()+"").find(Story.class);
+        List<StoryLite> storyList = DataSupport.where("storyId =?",mStory.getId()+"").find(StoryLite.class);
         boolean isExist = false;
         if(storyList.size() > 0){
             isExist = true;
@@ -198,8 +205,8 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
         return isExist;
     }
 
-    private List<Story> findAll(){
-        return DataSupport.findAll(Story.class);
+    private List<StoryLite> findAll(){
+        return DataSupport.findAll(StoryLite.class);
     }
 
 }
