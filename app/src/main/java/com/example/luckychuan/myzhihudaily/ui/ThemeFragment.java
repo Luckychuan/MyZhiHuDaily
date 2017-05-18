@@ -24,16 +24,17 @@ import java.util.List;
 /**
  * Created by Luckychuan on 2017/5/5.
  */
-public class ThemeFragment extends Fragment implements ThemeContentView {
+public class ThemeFragment extends BaseFragment implements ThemeContentView {
 
     private GetThemeContentPresenter mPresenter;
 
     private List<Object> mList;
     private ThemeRecyclerAdapter mAdapter;
-
+    private OnTitleChangeListener mListener;
 
     private static final String TAG = "ThemeFragment";
     private int mId;
+    private String mName;
 
     @Nullable
     @Override
@@ -73,6 +74,11 @@ public class ThemeFragment extends Fragment implements ThemeContentView {
     @Override
     public void updateUI(ThemeContent content) {
 
+        mName = content.getName();
+        if(mListener !=null){
+            mListener.changeToolbarTitle(mName);
+        }
+
         mList.clear();
 
         ThemeHeaderViewHolder.HeaderBean headerBean = new ThemeHeaderViewHolder.HeaderBean(content.getBackgroundUrl(),content.getDescription());
@@ -96,4 +102,23 @@ public class ThemeFragment extends Fragment implements ThemeContentView {
         super.onDestroyView();
         mPresenter.detach();
     }
+
+    @Override
+    public void setTitleChangeListener(OnTitleChangeListener listener) {
+        mListener = listener;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!hidden){
+            if(mListener !=null){
+                mListener.changeToolbarTitle(mName);
+            }
+        }
+
+
+    }
+
+
 }

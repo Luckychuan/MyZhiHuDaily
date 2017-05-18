@@ -3,7 +3,6 @@ package com.example.luckychuan.myzhihudaily.ui;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,19 +28,20 @@ import java.util.List;
 /**
  * 首页的界面
  */
-public class HomeFragment extends Fragment implements LatestDataView, OldDataView {
+public class HomeFragment extends BaseFragment implements LatestDataView, OldDataView {
 
     private GetLatestDataPresenter mLDPresenter;
     private GetOldDataPresenter mODPresenter;
 
     private List<ItemBean> mDataList;
     private LatestRecyclerAdapter mAdapter;
+    private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mRefreshLayout;
 
     //加载出来的最前一天新闻的日期
     private String mLastDate;
 
-    private RecyclerViewScrollListener mListener;
+    private OnTitleChangeListener mListener;
 
 
     @Nullable
@@ -60,13 +60,13 @@ public class HomeFragment extends Fragment implements LatestDataView, OldDataVie
 
 
         //初始化RecyclerView
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_main);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_main);
         mDataList = new ArrayList<>();
         mAdapter = new LatestRecyclerAdapter(mDataList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setAdapter(mAdapter);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -177,15 +177,21 @@ public class HomeFragment extends Fragment implements LatestDataView, OldDataVie
         }
     }
 
-    public void setRecyclerViewScrollListener(RecyclerViewScrollListener listener) {
+    public void setTitleChangeListener(OnTitleChangeListener listener) {
         mListener = listener;
     }
 
-    /**
-     * 当RecyclerView滑动时，通知Toolbar改变标题
-     */
-    interface RecyclerViewScrollListener {
-        void changeToolbarTitle(String title);
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!hidden){
+            if(mListener !=null){
+                mListener.changeToolbarTitle("首页");
+            }
+            if(mRecyclerView!=null){
+                mRecyclerView.scrollToPosition(0);
+            }
+        }
     }
 
 }

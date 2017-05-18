@@ -11,7 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.Theme;
@@ -21,7 +23,8 @@ import com.example.luckychuan.myzhihudaily.view.ThemeView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ThemeView {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        ThemeView, View.OnClickListener, BaseFragment.OnTitleChangeListener {
 
     private static final String TAG = "MainActivity";
 
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager mManager;
     private HomeFragment mHomeFragment;
     private ThemeFragment mThemeFragment;
+    private FavoriteFragment mFavoriteFragment;
 
 
     @Override
@@ -53,6 +57,9 @@ public class MainActivity extends AppCompatActivity
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
 
+        LinearLayout favoriteLayout = (LinearLayout) mNavigationView.getHeaderView(0).findViewById(R.id.favorite_layout);
+        favoriteLayout.setOnClickListener(this);
+
         //请求抽屉主题日报item
         mThemePresenter = new GetThemePresenter(this);
         mThemePresenter.attach(this);
@@ -60,18 +67,7 @@ public class MainActivity extends AppCompatActivity
 
         //初始化fragment
         mManager = getSupportFragmentManager();
-        FragmentTransaction transaction = mManager.beginTransaction();
-        mHomeFragment = new HomeFragment();
-        mHomeFragment.setRecyclerViewScrollListener(new HomeFragment.RecyclerViewScrollListener() {
-            @Override
-            public void changeToolbarTitle(String title) {
-                mToolbar.setTitle(title);
-            }
-        });
-        transaction.add(R.id.fragment_layout, mHomeFragment);
-        transaction.commit();
-
-
+        showHomeFragment();
     }
 
 
@@ -115,17 +111,10 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.first_page) {
-            FragmentTransaction transaction = mManager.beginTransaction();
-            if(mThemeFragment != null){
-                transaction.hide(mThemeFragment);
-            }
-            transaction.show(mHomeFragment);
-            transaction.commit();
-            mToolbar.setTitle("首页");
+            showHomeFragment();
         } else {
             for (Theme.Data data : mDrawerItems) {
                 if (id == data.getId()) {
-                    mToolbar.setTitle(data.getName());
                     showThemeFragment(id);
                     break;
                 }
@@ -138,22 +127,75 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void showHomeFragment() {
+
+        FragmentTransaction transaction = mManager.beginTransaction();
+
+        if(mThemeFragment!=null){
+            transaction.hide(mThemeFragment);
+        }
+        if(mFavoriteFragment !=null){
+            transaction.hide(mFavoriteFragment);
+        }
+
+        if (mHomeFragment == null) {
+            mHomeFragment = new HomeFragment();
+            mHomeFragment.setTitleChangeListener(this);
+            transaction.add(R.id.fragment_layout, mHomeFragment);
+        }else{
+            transaction.show(mHomeFragment);
+        }
+
+        transaction.commit();
+
+    }
+
     private void showThemeFragment(int id) {
         FragmentTransaction transaction = mManager.beginTransaction();
+
+        transaction.hide(mHomeFragment);
+        if(mFavoriteFragment !=null){
+            transaction.hide(mFavoriteFragment);
+        }
+
         if (mThemeFragment == null) {
             mThemeFragment = new ThemeFragment();
             Bundle bundle = new Bundle();
-            bundle.putInt("id",id);
+            bundle.putInt("id", id);
             mThemeFragment.setArguments(bundle);
-            transaction.hide(mHomeFragment);
-            transaction.add(R.id.fragment_layout,mThemeFragment);
-            transaction.commit();
-        }else{
-            transaction.hide(mHomeFragment);
+            mThemeFragment.setTitleChangeListener(this);
+            transaction.add(R.id.fragment_layout, mThemeFragment);
+        } else {
             transaction.show(mThemeFragment);
-            transaction.commit();
             mThemeFragment.refreshData(id);
         }
+
+        transaction.commit();
+
+    }
+
+    private void showFavoriteFragment(){
+        FragmentTransaction transaction = mManager.beginTransaction();
+
+        transaction.hide(mHomeFragment);
+        if(mThemeFragment!=null){
+            transaction.hide(mThemeFragment);
+        }
+
+        if (mFavoriteFragment == null) {
+            mFavoriteFragment = new FavoriteFragment();
+            mFavoriteFragment.setTitleChangeListener(this);
+            transaction.add(R.id.fragment_layout, mFavoriteFragment);
+        }else{
+            transaction.show(mFavoriteFragment);
+        }
+
+        transaction.commit();
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
+
     }
 
 
@@ -183,4 +225,19 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.favorite_layout:
+                showFavoriteFragment();
+                break;
+        }
+
+    }
+
+    @Override
+    public void changeToolbarTitle(String title) {
+        mToolbar.setTitle(title);
+    }
 }
