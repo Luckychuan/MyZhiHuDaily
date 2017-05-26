@@ -1,4 +1,4 @@
-package com.example.luckychuan.myzhihudaily;
+package com.example.luckychuan.myzhihudaily.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,7 +10,7 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
 /**
- * Glide将图片转换成圆形图片，感谢http://www.open-open.com/lib/view/open1472714460739.html
+ * Glide将图片转换成圆形图片，感谢原作者http://www.open-open.com/lib/view/open1472714460739.html
  */
 public class GlideCircleTransform extends BitmapTransformation {
 

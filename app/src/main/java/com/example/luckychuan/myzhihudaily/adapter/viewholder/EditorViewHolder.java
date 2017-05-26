@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
-import com.example.luckychuan.myzhihudaily.GlideCircleTransform;
+import com.example.luckychuan.myzhihudaily.widget.GlideCircleTransform;
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.Editor;
 

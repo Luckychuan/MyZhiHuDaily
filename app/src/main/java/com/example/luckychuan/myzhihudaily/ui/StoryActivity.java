@@ -3,6 +3,7 @@ package com.example.luckychuan.myzhihudaily.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -41,10 +42,11 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
     private static final String TAG = "StoryActivity";
     private GetStoryContentPresenter mPresenter;
 
-    private WebView mWebView;
     private Toolbar mToolbar;
 
     private Story mStory;
+
+    private ContentFragment mFragment;
 
 
     @Override
@@ -53,7 +55,7 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
         setContentView(R.layout.activity_story_detail);
 
         mStory = (Story) getIntent().getSerializableExtra("story");
-              int id = Integer.parseInt(mStory.getId());
+        int id = Integer.parseInt(mStory.getId());
 
         mPresenter = new GetStoryContentPresenter(this);
         mPresenter.attach(this);
@@ -71,73 +73,47 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
             }
         });
 
-        initWebView();
+
 
 
         //创建收藏的数据库
         Connector.getDatabase();
- //       DataSupport.deleteAll(StoryLite.class);
-        for(StoryLite story:findAll()){
-            Log.d(TAG, "onCreate: "+story.toString());
-        }
-
+//        //       DataSupport.deleteAll(StoryLite.class);
+//        for (StoryLite story : findAll()) {
+//            Log.d(TAG, "onCreate: " + story.toString());
+//        }
 
 
     }
 
-    private void initWebView() {
-        mWebView = (WebView) findViewById(R.id.web_view);
-        WebSettings settings = mWebView.getSettings();
-        settings.setJavaScriptEnabled(true);
-        settings.setBuiltInZoomControls(false);
 
-        mWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return false;
-            }
-        });
-
-    }
 
     @Override
     public void showErrorMsg(String error) {
 
     }
 
+
     @Override
     public void updateUI(StoryContent content) {
+        mFragment = new ContentFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("StoryContent",content);
+        mFragment.setArguments(bundle);
 
-        CoordinatorLayout layout = (CoordinatorLayout) findViewById(R.id.story_detail_layout);
-        layout.setVisibility(View.VISIBLE);
-
-        ImageView imageView = (ImageView) findViewById(R.id.image_detail);
-        TextView title = (TextView) findViewById(R.id.title_detail);
-        TextView source = (TextView) findViewById(R.id.source_detail);
-
-        Glide.with(this)
-                .load(content.getImageUrl())
-                .placeholder(R.color.white)
-                .error(R.color.white)
-                .into(imageView);
-
-        title.setText(content.getTitle());
-        source.setText(content.getImageSource());
-
-        String formatCss = String.format("<link href=\"%s\" rel=\"stylesheet\" type=\"text/css\"/>", content.getCss().get(0));
-        String formatHtml = content.getBody().replace("class=\"img-place-holder\"", "class=\"img-place-holder-ignored\"");
-        mWebView.loadData(formatCss + formatHtml, "text/html; charset=UTF-8", null);
-
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.test_fragment_layout,mFragment);
+        transaction.commit();
     }
 
     @Override
     public void updateToolbar(StoryExtra extra) {
-        Log.d(TAG, "updateToolbar: "+extra.toString());
+        Log.d(TAG, "updateToolbar: " + extra.toString());
         mToolbar.inflateMenu(R.menu.story_detail);
         Menu menu = mToolbar.getMenu();
 
         MenuItem favorite = menu.findItem(R.id.favorite);
-        if(isStoryExist()){
+        if (isStoryExist()) {
             favorite.setIcon(R.drawable.favorite_yellow);
         }
 
@@ -156,16 +132,16 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.share:
                 Toast.makeText(this, "尚未开发", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.favorite:
-                if(isStoryExist()){
+                if (isStoryExist()) {
                     item.setIcon(R.drawable.favorite);
                     //从数据库中移除
-                    DataSupport.deleteAll(StoryLite.class, "storyId = ?", mStory.getId()+"");
-                }else{
+                    DataSupport.deleteAll(StoryLite.class, "storyId = ?", mStory.getId() + "");
+                } else {
                     item.setIcon(R.drawable.favorite_yellow);
                     //添加到数据库中
                     StoryLite story = new StoryLite();
@@ -174,7 +150,7 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
                     story.setImageUrl(mStory.getImageUrl());
                     story.setStoryId(mStory.getId());
                     boolean result = story.save();
-                    Log.d(TAG, "onOptionsItemSelected: "+result);
+                    Log.d(TAG, "onOptionsItemSelected: " + result);
                 }
                 break;
         }
@@ -193,19 +169,20 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
 
     /**
      * //从数据库查询当前story是否已存在数据库中
+     *
      * @return
      */
-    private boolean isStoryExist(){
-        List<StoryLite> storyList = DataSupport.where("storyId =?",mStory.getId()+"").find(StoryLite.class);
+    private boolean isStoryExist() {
+        List<StoryLite> storyList = DataSupport.where("storyId =?", mStory.getId() + "").find(StoryLite.class);
         boolean isExist = false;
-        if(storyList.size() > 0){
+        if (storyList.size() > 0) {
             isExist = true;
         }
-        Log.d(TAG, "isStoryExist: "+isExist);
+        Log.d(TAG, "isStoryExist: " + isExist);
         return isExist;
     }
 
-    private List<StoryLite> findAll(){
+    private List<StoryLite> findAll() {
         return DataSupport.findAll(StoryLite.class);
     }
 

@@ -2,12 +2,13 @@ package com.example.luckychuan.myzhihudaily.bean;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Luckychuan on 2017/5/8.
  */
-public class StoryContent {
+public class StoryContent implements Serializable{
 
     private String body;
     @SerializedName("image_source")
@@ -17,24 +18,12 @@ public class StoryContent {
     private String imageUrl;
     @SerializedName("share_url")
     private String shareUrl;
-    private List<Recommender> recommenders;
     private int id;
     private List<String> css;
     private List<String> js;
 
 
-    public class Recommender{
-        private String avatar;
 
-        public String getAvatar() {
-            return avatar;
-        }
-
-        public void setAvatar(String avatar) {
-            this.avatar = avatar;
-        }
-
-    }
 
 
     public String getBody() {
@@ -85,14 +74,6 @@ public class StoryContent {
         return js;
     }
 
-    public List<Recommender> getRecommenders() {
-        return recommenders;
-    }
-
-    public void setRecommenders(List<Recommender> recommenders) {
-        this.recommenders = recommenders;
-    }
-
     public int getId() {
         return id;
     }
@@ -117,7 +98,6 @@ public class StoryContent {
                 ", title='" + title + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", shareUrl='" + shareUrl + '\'' +
-                ", recommenders=" + recommenders +
                 ", id=" + id +
                 ", css=" + css +
                 '}';
