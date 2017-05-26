@@ -15,6 +15,8 @@ import com.example.luckychuan.myzhihudaily.bean.ItemBean;
 import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.ui.StoryActivity;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,10 +46,26 @@ public class LatestRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> 
             ((StoryViewHolder)viewHolder).setOnClickListener(new StoryViewHolder.OnItemClickListener() {
                 @Override
                 public void OnItemClick(int position) {
-                    Story story = ((Story)mList.get(position).bean);
+
+                    //传递整个Story列表和被点击的Story在列表中的位置
+                    Story currentStory = (Story) mList.get(position).bean;
+                    List<Story> list = new ArrayList<>();
+                    int positionInList = 0;
+                    for(ItemBean itemBean : mList){
+                        if(itemBean.type == TYPE_STORY){
+                            Story story = (Story) itemBean.bean;
+                            list.add(story);
+
+                            if(story.getId().equals(currentStory.getId())){
+                                positionInList = list.size()-1;
+                            }
+                        }
+                    }
+
                     Context context = parent.getContext();
                     Intent intent = new Intent(context, StoryActivity.class);
-                    intent.putExtra("story",story);
+                    intent.putExtra("storyList", (Serializable) list);
+                    intent.putExtra("position",positionInList);
                     context.startActivity(intent);
                 }
             });

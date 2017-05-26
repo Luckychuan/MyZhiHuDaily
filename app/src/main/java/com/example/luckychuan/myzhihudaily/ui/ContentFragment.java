@@ -16,13 +16,17 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.StoryContent;
+import com.example.luckychuan.myzhihudaily.presenter.GetStoryContentPresenter;
+import com.example.luckychuan.myzhihudaily.view.StoryContentView;
 
 /**
  * StoryDetailActivity中ViewPager的Fragment
  */
 
-public class ContentFragment extends Fragment {
+public class ContentFragment extends Fragment implements StoryContentView {
 
+    private View mView;
+    private GetStoryContentPresenter mPresenter;
 
     @Nullable
     @Override
@@ -33,19 +37,21 @@ public class ContentFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mView = view;
 
-        StoryContent content = (StoryContent) getArguments().getSerializable("StoryContent");
-        updateUI(view,content);
+        mPresenter = new GetStoryContentPresenter(this);
+        mPresenter.attach(this);
+        String  id = getArguments().getString("id");
+        mPresenter.requestStoryContent(Integer.parseInt(id));
+
     }
 
+    @Override
+    public void updateUI(StoryContent content) {
 
-    private void updateUI(View view,StoryContent content) {
-
-
-
-        ImageView imageView = (ImageView) view.findViewById(R.id.image_detail);
-        TextView title = (TextView) view.findViewById(R.id.title_detail);
-        TextView source = (TextView) view.findViewById(R.id.source_detail);
+        ImageView imageView = (ImageView) mView.findViewById(R.id.image_detail);
+        TextView title = (TextView) mView.findViewById(R.id.title_detail);
+        TextView source = (TextView) mView.findViewById(R.id.source_detail);
 
         Glide.with(this)
                 .load(content.getImageUrl())
@@ -56,7 +62,7 @@ public class ContentFragment extends Fragment {
         title.setText(content.getTitle());
         source.setText(content.getImageSource());
 
-        WebView webView = (WebView) view.findViewById(R.id.web_view);
+        WebView webView = (WebView) mView.findViewById(R.id.web_view);
 
         //初始化WebView
         WebSettings settings = webView.getSettings();
@@ -76,4 +82,14 @@ public class ContentFragment extends Fragment {
 
     }
 
+    @Override
+    public void showErrorMsg(String error) {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.detach();
+    }
 }

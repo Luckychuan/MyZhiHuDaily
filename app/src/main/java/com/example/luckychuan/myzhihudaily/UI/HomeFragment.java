@@ -124,15 +124,15 @@ public class HomeFragment extends BaseFragment implements LatestDataView, OldDat
         mDataList.clear();
 
         //添加banner数据
-        mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_BANNER, data.getTopStories()));
+        mDataList.add(new ItemBean(LatestRecyclerAdapter.TYPE_BANNER, data.getTopStories()));
 
         //添加日期
-        mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_DATE, data.getDate()));
+        mDataList.add(new ItemBean(LatestRecyclerAdapter.TYPE_DATE, data.getDate()));
 
 
         //添加新闻列表
         for (Story story : data.getStories()) {
-            mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_STORY, story));
+            mDataList.add(new ItemBean(LatestRecyclerAdapter.TYPE_STORY, story));
         }
 
         mAdapter.notifyDataSetChanged();
@@ -150,12 +150,12 @@ public class HomeFragment extends BaseFragment implements LatestDataView, OldDat
         mLastDate = data.getDate();
 
         //添加日期
-        mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_DATE, data.getDate()));
+        mDataList.add(new ItemBean(LatestRecyclerAdapter.TYPE_DATE, data.getDate()));
 
 
         //添加新闻列表
         for (Story story : data.getStories()) {
-            mDataList.add(new ItemBean<>(LatestRecyclerAdapter.TYPE_STORY, story));
+            mDataList.add(new ItemBean(LatestRecyclerAdapter.TYPE_STORY, story));
         }
 
         mAdapter.notifyDataSetChanged();

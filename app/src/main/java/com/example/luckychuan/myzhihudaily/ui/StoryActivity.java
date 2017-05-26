@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,26 +22,30 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.luckychuan.myzhihudaily.R;
+import com.example.luckychuan.myzhihudaily.adapter.StoryContentAdapter;
 import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.bean.StoryContent;
 import com.example.luckychuan.myzhihudaily.bean.StoryExtra;
 import com.example.luckychuan.myzhihudaily.bean.StoryLite;
 import com.example.luckychuan.myzhihudaily.presenter.GetStoryContentPresenter;
+import com.example.luckychuan.myzhihudaily.presenter.GetStoryExtraPresenter;
 import com.example.luckychuan.myzhihudaily.view.StoryContentView;
+import com.example.luckychuan.myzhihudaily.view.StoryExtraView;
 import com.example.luckychuan.myzhihudaily.widget.TextActionProvider;
 
 import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 新闻的内容
  */
-public class StoryActivity extends AppCompatActivity implements StoryContentView {
+public class StoryActivity extends AppCompatActivity implements StoryExtraView {
 
     private static final String TAG = "StoryActivity";
-    private GetStoryContentPresenter mPresenter;
+    private GetStoryExtraPresenter mPresenter;
 
     private Toolbar mToolbar;
 
@@ -48,30 +53,38 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
 
     private ContentFragment mFragment;
 
+    private List<Story> mStoryList;
+    //选中的story在list上的位置
+    private int mPosition;
+    private ViewPager mViewPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_detail);
 
-        mStory = (Story) getIntent().getSerializableExtra("story");
-        int id = Integer.parseInt(mStory.getId());
+        //获得传递过来的Story列表
+        Intent intent =  getIntent();
+        mPosition = intent.getIntExtra("position",0);
+        mStoryList = new ArrayList<>();
+        List<Story> list = (List<Story>) intent.getSerializableExtra("storyList");
+        mStoryList.addAll(list);
+        mStory = mStoryList.get(mPosition);
 
-        mPresenter = new GetStoryContentPresenter(this);
+        //初始化Presenter
+        mPresenter = new GetStoryExtraPresenter(this);
         mPresenter.attach(this);
-        mPresenter.requestStoryContent(id);
+        int id = Integer.parseInt(mStory.getId());
         mPresenter.requestStoryExtra(id);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar_detail);
-        mToolbar.setTitle("");
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        //初始化ViewPager
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        mViewPager.setOffscreenPageLimit(0);
+        StoryContentAdapter adapter = new StoryContentAdapter(getSupportFragmentManager(),mStoryList);
+        mViewPager.setAdapter(adapter);
+        mViewPager.setCurrentItem(mPosition);
+
 
 
 
@@ -94,21 +107,32 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
     }
 
 
-    @Override
-    public void updateUI(StoryContent content) {
-        mFragment = new ContentFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("StoryContent",content);
-        mFragment.setArguments(bundle);
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.test_fragment_layout,mFragment);
-        transaction.commit();
-    }
+//    @Override
+//    public void updateUI(StoryContent content) {
+//        mFragment = new ContentFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("StoryContent",content);
+//        mFragment.setArguments(bundle);
+//
+//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        transaction.add(R.id.test_fragment_layout,mFragment);
+//        transaction.commit();
+//    }
 
     @Override
     public void updateToolbar(StoryExtra extra) {
-        Log.d(TAG, "updateToolbar: " + extra.toString());
+
+        //初始化Toolbar
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_detail);
+        mToolbar.setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
         mToolbar.inflateMenu(R.menu.story_detail);
         Menu menu = mToolbar.getMenu();
 
@@ -117,8 +141,8 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
             favorite.setIcon(R.drawable.favorite_yellow);
         }
 
-        TextActionProvider number = (TextActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.love));
-        number.setResource(R.drawable.praise, extra.getPopularity());
+        TextActionProvider praise = (TextActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.love));
+        praise.setResource(R.drawable.praise, extra.getPopularity());
 
         TextActionProvider comment = (TextActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.comment));
         comment.setResource(R.drawable.comment, extra.getComments());
@@ -185,5 +209,6 @@ public class StoryActivity extends AppCompatActivity implements StoryContentView
     private List<StoryLite> findAll() {
         return DataSupport.findAll(StoryLite.class);
     }
+
 
 }

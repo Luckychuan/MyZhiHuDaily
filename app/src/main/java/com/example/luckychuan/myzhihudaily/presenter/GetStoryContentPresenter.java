@@ -34,18 +34,4 @@ public class GetStoryContentPresenter extends BasePresenter {
         });
     }
 
-    public void requestStoryExtra(int id){
-        mModel.getStoryExtra(id, new Callback<StoryExtra>() {
-            @Override
-            public void onSuccess(StoryExtra bean) {
-                mView.updateToolbar(bean);
-            }
-
-            @Override
-            public void onFail(String errorMsg) {
-
-            }
-        });
-    }
-
 }
