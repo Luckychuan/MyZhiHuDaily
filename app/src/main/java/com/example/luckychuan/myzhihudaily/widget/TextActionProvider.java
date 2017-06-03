@@ -16,6 +16,7 @@ import com.example.luckychuan.myzhihudaily.R;
 public class TextActionProvider extends ActionProvider{
 
     private View mView;
+    private TextView mTextView;
 
 
     /**
@@ -30,16 +31,24 @@ public class TextActionProvider extends ActionProvider{
     @Override
     public View onCreateActionView() {
         mView = LayoutInflater.from(getContext()).inflate(R.layout.menu_item_view,null);
+        mTextView = (TextView) mView.findViewById(R.id.menu_number);
         return mView;
     }
 
-    public void setResource(int id,int number){
+    public void setDrawable(int id){
         ImageView imageView = (ImageView) mView.findViewById(R.id.menu_icon);
-        TextView textView = (TextView) mView.findViewById(R.id.menu_number);
 
         imageView.setImageResource(id);
-        textView.setText(number+"");
 
+    }
+
+
+    public void setNumber(int number){
+        mTextView.setText(number+"");
+    }
+
+    public void setLoadingText(){
+        mTextView.setText("...");
     }
 
     public void setOnClickListener(View.OnClickListener listener){

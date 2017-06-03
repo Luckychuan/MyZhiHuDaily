@@ -11,6 +11,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -48,7 +49,8 @@ public class ContentFragment extends Fragment implements StoryContentView {
 
     @Override
     public void updateUI(StoryContent content) {
-
+        RelativeLayout relativeLayout = (RelativeLayout) mView.findViewById(R.id.head_layout);
+        relativeLayout.setVisibility(View.VISIBLE);
         ImageView imageView = (ImageView) mView.findViewById(R.id.image_detail);
         TextView title = (TextView) mView.findViewById(R.id.title_detail);
         TextView source = (TextView) mView.findViewById(R.id.source_detail);

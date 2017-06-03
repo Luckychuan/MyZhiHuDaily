@@ -21,6 +21,7 @@ public class GetStoryExtraPresenter extends BasePresenter {
     }
 
     public void requestStoryExtra(int id) {
+        mView.setLoadingUI();
         mModel.getStoryExtra(id, new Callback<StoryExtra>() {
             @Override
             public void onSuccess(StoryExtra bean) {

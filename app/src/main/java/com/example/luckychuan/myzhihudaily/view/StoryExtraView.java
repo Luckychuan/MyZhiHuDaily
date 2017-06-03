@@ -9,4 +9,5 @@ import com.example.luckychuan.myzhihudaily.bean.StoryExtra;
 public interface StoryExtraView extends BaseView {
 
     void updateToolbar(StoryExtra extra);
+    void setLoadingUI();
 }
