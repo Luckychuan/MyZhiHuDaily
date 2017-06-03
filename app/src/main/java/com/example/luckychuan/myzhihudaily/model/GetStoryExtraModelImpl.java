@@ -14,7 +14,7 @@ import rx.schedulers.Schedulers;
 
 public class GetStoryExtraModelImpl implements GetStoryExtraModel {
     @Override
-    public void getStoryExtra(int id, final Callback<StoryExtra> callback) {
+    public void getStoryExtra(String id, final Callback<StoryExtra> callback) {
         RetrofitUtil.getInstance()
                 .getRetrofit()
                 .create(ApiService.class)

@@ -13,7 +13,7 @@ import rx.schedulers.Schedulers;
  */
 public class GetStoryContentModelImpl implements GetStoryContentModel {
     @Override
-    public void getStoryContent(int id, final Callback<StoryContent> callback) {
+    public void getStoryContent(String id, final Callback<StoryContent> callback) {
         RetrofitUtil.getInstance()
                 .getRetrofit()
                 .create(ApiService.class)

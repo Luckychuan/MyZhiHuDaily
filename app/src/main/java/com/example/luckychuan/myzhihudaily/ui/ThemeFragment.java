@@ -33,7 +33,7 @@ public class ThemeFragment extends BaseFragment implements ThemeContentView {
     private OnTitleChangeListener mListener;
 
     private static final String TAG = "ThemeFragment";
-    private int mId;
+    private String mId;
     private String mName;
 
     @Nullable
@@ -48,7 +48,7 @@ public class ThemeFragment extends BaseFragment implements ThemeContentView {
 
         mPresenter = new GetThemeContentPresenter(this);
         mPresenter.attach(this);
-        mPresenter.requestData((Integer) getArguments().get("id"));
+        mPresenter.requestData((String)getArguments().get("id"));
 
         mList = new ArrayList<>();
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_theme);
@@ -59,7 +59,7 @@ public class ThemeFragment extends BaseFragment implements ThemeContentView {
 
     }
 
-    public void refreshData(int id) {
+    public void refreshData(String id) {
         if (mId != id) {
             mId = id;
             mPresenter.requestData(id);

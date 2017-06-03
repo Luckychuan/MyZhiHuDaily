@@ -7,5 +7,5 @@ import com.example.luckychuan.myzhihudaily.bean.StoryContent;
  */
 public interface GetStoryContentModel {
 
-    void getStoryContent(int id ,Callback<StoryContent> callback);
+    void getStoryContent(String id ,Callback<StoryContent> callback);
 }

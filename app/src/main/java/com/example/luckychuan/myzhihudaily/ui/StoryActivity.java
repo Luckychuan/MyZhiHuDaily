@@ -93,7 +93,7 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
             @Override
             public void onPageSelected(int position) {
                 mStory = mStoryList.get(position);
-                mPresenter.requestStoryExtra(Integer.parseInt(mStory.getId()));
+                mPresenter.requestStoryExtra(mStory.getId());
             }
 
             @Override
@@ -105,8 +105,7 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
         //初始化Presenter
         mPresenter = new GetStoryExtraPresenter(this);
         mPresenter.attach(this);
-        int id = Integer.parseInt(mStory.getId());
-        mPresenter.requestStoryExtra(id);
+        mPresenter.requestStoryExtra(mStory.getId());
 
 
         //创建收藏的数据库

@@ -19,7 +19,7 @@ public class GetThemeContentPresenter extends BasePresenter {
         mModel = new GetThemeContentModelImpl();
     }
 
-    public void requestData(int id){
+    public void requestData(String id){
         mModel.getThemeContent(id,new Callback<ThemeContent>() {
             @Override
             public void onSuccess(ThemeContent bean) {

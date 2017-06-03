@@ -7,6 +7,6 @@ import com.example.luckychuan.myzhihudaily.bean.ThemeContent;
  */
 public interface GetThemeContentModel {
 
-    void getThemeContent(int id, Callback<ThemeContent> callback);
+    void getThemeContent(String id, Callback<ThemeContent> callback);
 
 }

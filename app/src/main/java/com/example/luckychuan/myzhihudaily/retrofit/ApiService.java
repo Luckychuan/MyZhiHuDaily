@@ -12,7 +12,7 @@ import retrofit2.http.Path;
 import rx.Observable;
 
 /**
- * Created by Luckychuan on 2017/4/20.
+ * 知乎日报API，感谢原作者https://github.com/izzyleung/ZhihuDailyPurify/wiki/%E7%9F%A5%E4%B9%8E%E6%97%A5%E6%8A%A5-API-%E5%88%86%E6%9E%90
  */
 public interface ApiService {
 
@@ -41,20 +41,25 @@ public interface ApiService {
 //    URL: http://news-at.zhihu.com/api/4/theme/11
 //    使用在 主题日报列表查看 中获得需要查看的主题日报的 id，拼接在 http://news-at.zhihu.com/api/4/theme/ 后，得到对应主题日报 JSON 格式的内容
     @GET("api/4/theme/{id}")
-    Observable<ThemeContent> getThemeContent(@Path("id") int id);
+    Observable<ThemeContent> getThemeContent(@Path("id") String id);
 
 
     //    消息内容获取与离线下载
 //    URL: http://news-at.zhihu.com/api/4/news/3892357
 //    使用在 最新消息 中获得的 id，拼接在 http://news-at.zhihu.com/api/4/news/ 后，得到对应消息 JSON 格式的内容
     @GET("api/4/news/{id}")
-    Observable<StoryContent> getStoryContent(@Path("id") int id);
+    Observable<StoryContent> getStoryContent(@Path("id") String id);
 
 //    新闻额外信息
 //    URL:  http://news-at.zhihu.com/api/4/story-extra/3892357
 //    输入新闻的ID，获取对应新闻的额外信息，如评论数量，所获的『赞』的数量。
     @GET("api/4/story-extra/{id}")
-    Observable<StoryExtra> getStoryExtra(@Path("id") int id);
+    Observable<StoryExtra> getStoryExtra(@Path("id") String id);
+
+
+
+
+
 
 
 

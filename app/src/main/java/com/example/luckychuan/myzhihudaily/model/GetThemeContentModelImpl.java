@@ -13,7 +13,7 @@ import rx.schedulers.Schedulers;
  */
 public class GetThemeContentModelImpl implements GetThemeContentModel {
     @Override
-    public void getThemeContent(int id, final Callback<ThemeContent> callback) {
+    public void getThemeContent(String id, final Callback<ThemeContent> callback) {
         RetrofitUtil.getInstance()
                 .getRetrofit()
                 .create(ApiService.class)

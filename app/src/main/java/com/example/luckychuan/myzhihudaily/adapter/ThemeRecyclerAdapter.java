@@ -14,6 +14,8 @@ import com.example.luckychuan.myzhihudaily.adapter.viewholder.ThemeHeaderViewHol
 import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.ui.StoryActivity;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,16 +42,24 @@ public class ThemeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             viewHolder = new EditorViewHolder(inflater.inflate(R.layout.editor_holder_layout, parent, false));
         } else {
             viewHolder = new StoryViewHolder(inflater.inflate(R.layout.story_holder_layout, parent, false));
-            ((StoryViewHolder)viewHolder).setOnClickListener(new StoryViewHolder.OnItemClickListener() {
+            ((StoryViewHolder) viewHolder).setOnClickListener(new StoryViewHolder.OnItemClickListener() {
                 @Override
                 public void OnItemClick(int position) {
-                    Story story = ((Story)mList.get(position));
+
                     Context context = parent.getContext();
+
+                    List<Story> storyList = new ArrayList<Story>();
+                    for(int i = 2;i<mList.size();i++){
+                        storyList.add((Story) mList.get(i));
+                    }
+
                     Intent intent = new Intent(context, StoryActivity.class);
-                    intent.putExtra("story",story);
+                    intent.putExtra("storyList", (Serializable) storyList);
+                    intent.putExtra("position", position - 2);
                     context.startActivity(intent);
                 }
             });
+
         }
         return viewHolder;
     }

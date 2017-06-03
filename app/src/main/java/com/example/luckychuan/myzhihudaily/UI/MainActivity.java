@@ -161,13 +161,13 @@ public class MainActivity extends AppCompatActivity
         if (mThemeFragment == null) {
             mThemeFragment = new ThemeFragment();
             Bundle bundle = new Bundle();
-            bundle.putInt("id", id);
+            bundle.putString("id", id+"");
             mThemeFragment.setArguments(bundle);
             mThemeFragment.setTitleChangeListener(this);
             transaction.add(R.id.fragment_layout, mThemeFragment);
         } else {
             transaction.show(mThemeFragment);
-            mThemeFragment.refreshData(id);
+            mThemeFragment.refreshData(id+"");
         }
 
         transaction.commit();

@@ -20,7 +20,7 @@ public class GetStoryContentPresenter extends BasePresenter {
         mModel = new GetStoryContentModelImpl();
     }
 
-    public void requestStoryContent(int id){
+    public void requestStoryContent(String id){
         mModel.getStoryContent(id, new Callback<StoryContent>() {
             @Override
             public void onSuccess(StoryContent bean) {

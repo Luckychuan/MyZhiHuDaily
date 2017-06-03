@@ -43,7 +43,7 @@ public class ContentFragment extends Fragment implements StoryContentView {
         mPresenter = new GetStoryContentPresenter(this);
         mPresenter.attach(this);
         String  id = getArguments().getString("id");
-        mPresenter.requestStoryContent(Integer.parseInt(id));
+        mPresenter.requestStoryContent(id);
 
     }
 

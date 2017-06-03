@@ -20,7 +20,7 @@ public class GetStoryExtraPresenter extends BasePresenter {
         mView = view;
     }
 
-    public void requestStoryExtra(int id) {
+    public void requestStoryExtra(String id) {
         mView.setLoadingUI();
         mModel.getStoryExtra(id, new Callback<StoryExtra>() {
             @Override
