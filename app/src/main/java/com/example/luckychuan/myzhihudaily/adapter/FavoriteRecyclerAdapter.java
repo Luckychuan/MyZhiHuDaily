@@ -12,6 +12,7 @@ import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.bean.StoryLite;
 import com.example.luckychuan.myzhihudaily.ui.StoryActivity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -30,13 +31,15 @@ public class FavoriteRecyclerAdapter extends RecyclerView.Adapter<StoryViewHolde
     @Override
     public StoryViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         StoryViewHolder viewHolder = new StoryViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.story_holder_layout, parent, false));
+
         viewHolder.setOnClickListener(new StoryViewHolder.OnItemClickListener() {
             @Override
             public void OnItemClick(int position) {
-                Story story = ((Story) mList.get(position));
                 Context context = parent.getContext();
+
                 Intent intent = new Intent(context, StoryActivity.class);
-                intent.putExtra("story", story);
+                intent.putExtra("storyList", (Serializable) mList);
+                intent.putExtra("position",position);
                 context.startActivity(intent);
             }
         });

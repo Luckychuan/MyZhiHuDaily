@@ -15,6 +15,8 @@ import com.example.luckychuan.myzhihudaily.bean.LatestData;
 import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.ui.StoryActivity;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,13 +42,13 @@ public class TopStoryAdapter extends PagerAdapter {
 
 
     @Override
-    public Object instantiateItem(final ViewGroup container, int position) {
+    public Object instantiateItem(final ViewGroup container, final int position) {
         View view = LayoutInflater.from(container.getContext()).inflate(R.layout.pager_adapter_item, null);
 
         ImageView imageView = (ImageView) view.findViewById(R.id.top_story_imageView);
         TextView textView = (TextView) view.findViewById(R.id.top_story_textView);
 
-        final LatestData.TopStory topStory = mTopStoryList.get(position);
+       LatestData.TopStory topStory = mTopStoryList.get(position);
 
         Glide.with(container.getContext())
                 .load(topStory.getImageUrl())
@@ -62,14 +64,19 @@ public class TopStoryAdapter extends PagerAdapter {
                 Context context = container.getContext();
                 Intent intent = new Intent(context, StoryActivity.class);
 
-                Story story = new Story();
-                story.setId(topStory.getId());
-                story.setImageUrl(new String[]{topStory.getImageUrl()});
-                story.setTitle(topStory.getTitle());
-                story.setMultiPic(topStory.isMultiPic());
+                List<Story> storyList = new ArrayList<Story>();
+                for(LatestData.TopStory topStory:mTopStoryList){
+                    Story story = new Story();
+                    story.setId(topStory.getId());
+                    story.setImageUrl(new String[]{topStory.getImageUrl()});
+                    story.setTitle(topStory.getTitle());
+                    story.setMultiPic(topStory.isMultiPic());
 
-                intent.putExtra("story",story);
+                    storyList.add(story);
+                }
 
+                intent.putExtra("storyList", (Serializable) storyList);
+                intent.putExtra("position",position);
                 context.startActivity(intent);
             }
         });

@@ -37,7 +37,6 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
 
     private Story mStory;
     private List<Story> mStoryList;
-    private ViewPager mViewPager;
 
     Toolbar mToolbar;
     //toolbar上的menuItem
@@ -79,12 +78,13 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
 
 
         //初始化ViewPager
-        mViewPager = (ViewPager) findViewById(R.id.viewPager);
-        mViewPager.setOffscreenPageLimit(1);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager.setOffscreenPageLimit(1);
         StoryContentAdapter adapter = new StoryContentAdapter(getSupportFragmentManager(), mStoryList);
-        mViewPager.setAdapter(adapter);
-        mViewPager.setCurrentItem(position);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(position);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -92,15 +92,13 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
 
             @Override
             public void onPageSelected(int position) {
-
+                mStory = mStoryList.get(position);
+                mPresenter.requestStoryExtra(Integer.parseInt(mStory.getId()));
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                if (state == ViewPager.SCROLL_STATE_IDLE) {
-                    mStory = mStoryList.get(mViewPager.getCurrentItem());
-                    mPresenter.requestStoryExtra(Integer.parseInt(mStory.getId()));
-                }
+
             }
         });
 
