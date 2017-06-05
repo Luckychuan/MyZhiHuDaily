@@ -14,9 +14,13 @@ import android.widget.Toast;
 
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.adapter.StoryContentAdapter;
+import com.example.luckychuan.myzhihudaily.bean.Comment;
+import com.example.luckychuan.myzhihudaily.bean.Comments;
 import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.bean.StoryExtra;
 import com.example.luckychuan.myzhihudaily.bean.StoryLite;
+import com.example.luckychuan.myzhihudaily.model.Callback;
+import com.example.luckychuan.myzhihudaily.model.GetCommentModelImpl;
 import com.example.luckychuan.myzhihudaily.presenter.GetStoryExtraPresenter;
 import com.example.luckychuan.myzhihudaily.view.StoryExtraView;
 import com.example.luckychuan.myzhihudaily.widget.TextActionProvider;
@@ -56,6 +60,7 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
         List<Story> list = (List<Story>) intent.getSerializableExtra("storyList");
         mStoryList.addAll(list);
         mStory = mStoryList.get(position);
+        Log.d(TAG, "onCreate: "+mStory.getId());
 
         //初始化Toolbar
         mToolbar = (Toolbar) findViewById(R.id.toolbar_detail);
@@ -70,6 +75,7 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
         mToolbar.inflateMenu(R.menu.story_detail);
         mToolbar.setOnMenuItemClickListener(this);
 
+        //初始化TextActionProvider
         Menu menu = mToolbar.getMenu();
         mPraiseProvider = (TextActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.love));
         mPraiseProvider.setDrawable(R.drawable.praise);
@@ -119,6 +125,7 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
     }
 
 
+
     @Override
     public void showErrorMsg(String error) {
 
@@ -143,7 +150,9 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
         mCommentProvider.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(StoryActivity.this,CommentActivity.class);
+                intent.putExtra("id",mStory.getId());
+                startActivity(intent);
             }
         });
     }
@@ -193,6 +202,7 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
             case R.id.share:
                 Toast.makeText(this, "尚未开发", Toast.LENGTH_SHORT).show();
                 break;
+
             case R.id.favorite:
                 if (isStoryExist()) {
                     item.setIcon(R.drawable.favorite);
@@ -210,6 +220,7 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
                     Log.d(TAG, "onOptionsItemSelected: " + result);
                 }
                 break;
+
         }
         return true;
     }

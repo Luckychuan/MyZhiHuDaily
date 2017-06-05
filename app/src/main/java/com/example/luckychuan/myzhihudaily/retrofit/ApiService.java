@@ -1,11 +1,15 @@
 package com.example.luckychuan.myzhihudaily.retrofit;
 
+import com.example.luckychuan.myzhihudaily.bean.Comment;
+import com.example.luckychuan.myzhihudaily.bean.Comments;
 import com.example.luckychuan.myzhihudaily.bean.LatestData;
 import com.example.luckychuan.myzhihudaily.bean.News;
 import com.example.luckychuan.myzhihudaily.bean.StoryContent;
 import com.example.luckychuan.myzhihudaily.bean.StoryExtra;
 import com.example.luckychuan.myzhihudaily.bean.Theme;
 import com.example.luckychuan.myzhihudaily.bean.ThemeContent;
+
+import java.util.List;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -50,17 +54,21 @@ public interface ApiService {
     @GET("api/4/news/{id}")
     Observable<StoryContent> getStoryContent(@Path("id") String id);
 
-//    新闻额外信息
+    //    新闻额外信息
 //    URL:  http://news-at.zhihu.com/api/4/story-extra/3892357
 //    输入新闻的ID，获取对应新闻的额外信息，如评论数量，所获的『赞』的数量。
     @GET("api/4/story-extra/{id}")
     Observable<StoryExtra> getStoryExtra(@Path("id") String id);
 
 
+    //    新闻对应长评论查看
+//    •URL:  http://news-at.zhihu.com/api/4/story/8997528/long-comments
+//    // •使用在  最新消息  中获得的  id ，在  http://news-at.zhihu.com/api/4/story/#{id}/long-comments  中将  id  替换为对应的  id ，得到长评论 JSON 格式的内容
+    @GET("api/4/story/{id}/long-comments")
+    Observable<Comments> getLongComments(@Path("id") String id);
 
-
-
-
+    @GET("api/4/story/{id}/short-comments")
+    Observable<Comments> getShortComments(@Path("id") String id);
 
 
 }

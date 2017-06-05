@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.Theme;
+import com.example.luckychuan.myzhihudaily.model.GetCommentModelImpl;
 import com.example.luckychuan.myzhihudaily.presenter.GetThemePresenter;
 import com.example.luckychuan.myzhihudaily.view.ThemeView;
 
@@ -69,7 +70,6 @@ public class MainActivity extends AppCompatActivity
         mManager = getSupportFragmentManager();
         showHomeFragment();
     }
-
 
     @Override
     public void onBackPressed() {
