@@ -133,7 +133,7 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
 
 
     @Override
-    public void updateToolbar(StoryExtra extra) {
+    public void updateToolbar(final StoryExtra extra) {
 
 
         Menu menu = mToolbar.getMenu();
@@ -152,6 +152,7 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
             public void onClick(View view) {
                 Intent intent = new Intent(StoryActivity.this,CommentActivity.class);
                 intent.putExtra("id",mStory.getId());
+                intent.putExtra("number",extra.getComments());
                 startActivity(intent);
             }
         });
