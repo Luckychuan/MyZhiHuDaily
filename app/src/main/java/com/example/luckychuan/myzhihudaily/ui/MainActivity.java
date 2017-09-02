@@ -12,12 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.Theme;
-import com.example.luckychuan.myzhihudaily.model.GetCommentModelImpl;
 import com.example.luckychuan.myzhihudaily.presenter.GetThemePresenter;
 import com.example.luckychuan.myzhihudaily.view.ThemeView;
 

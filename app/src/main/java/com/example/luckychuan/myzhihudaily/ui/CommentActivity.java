@@ -1,26 +1,34 @@
 package com.example.luckychuan.myzhihudaily.ui;
 
-import android.app.Activity;
+
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 
 import com.example.luckychuan.myzhihudaily.R;
+import com.example.luckychuan.myzhihudaily.adapter.CommentRecyclerAdapter;
 import com.example.luckychuan.myzhihudaily.bean.Comment;
+import com.example.luckychuan.myzhihudaily.bean.ItemBean;
 import com.example.luckychuan.myzhihudaily.presenter.CommentPresenter;
 import com.example.luckychuan.myzhihudaily.view.CommentView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Luckychuan on 2017/6/5.
  */
 
-public class CommentActivity extends Activity implements CommentView {
+public class CommentActivity extends AppCompatActivity implements CommentView {
 
     private static final String TAG = "CommentActivity";
     private CommentPresenter mPresenter;
+    private List<ItemBean> mComments;
+    private CommentRecyclerAdapter mAdapter;
+    private int mSum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,16 +43,18 @@ public class CommentActivity extends Activity implements CommentView {
         mPresenter.requestShortComment(id);
 
         //初始化Toolbar
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_comment);
-        toolbar.setTitle(getIntent().getIntExtra("number", 0) + "条点评");
+        mSum = getIntent().getIntExtra("number", 0);
+        toolbar.setTitle(mSum + "条点评");
         toolbar.setNavigationIcon(R.drawable.back);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        setSupportActionBar(toolbar);
+
+
+        mComments = new ArrayList<>();
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_comment);
+        mAdapter = new CommentRecyclerAdapter(mComments);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(mAdapter);
 
 
     }
@@ -72,6 +82,11 @@ public class CommentActivity extends Activity implements CommentView {
         for (Comment comment : longComments) {
             Log.d(TAG, "long: " + comment.toString());
         }
+        ItemBean longCommentText = new ItemBean(CommentRecyclerAdapter.TEXT, longComments.size() + "条长评");
+        mComments.add(longCommentText);
+        ItemBean shortCommentText = new ItemBean(CommentRecyclerAdapter.TEXT, mSum - longComments.size() + "条短评");
+        mComments.add(mComments.size(),shortCommentText);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
