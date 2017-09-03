@@ -78,14 +78,14 @@ public class CommentActivity extends AppCompatActivity implements CommentView {
 
     @Override
     public void initLongComment(List<Comment> longComments) {
-        Log.d(TAG, "long size " + longComments.size());
-        for (Comment comment : longComments) {
-            Log.d(TAG, "long: " + comment.toString());
-        }
         ItemBean longCommentText = new ItemBean(CommentRecyclerAdapter.TEXT, longComments.size() + "条长评");
         mComments.add(longCommentText);
+        for (Comment comment : longComments) {
+            ItemBean longComment = new ItemBean(CommentRecyclerAdapter.COMMENT,comment);
+            mComments.add(longComment);
+        }
         ItemBean shortCommentText = new ItemBean(CommentRecyclerAdapter.TEXT, mSum - longComments.size() + "条短评");
-        mComments.add(mComments.size(),shortCommentText);
+        mComments.add(shortCommentText);
         mAdapter.notifyDataSetChanged();
     }
 

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.adapter.viewholder.BaseViewHolder;
 import com.example.luckychuan.myzhihudaily.adapter.viewholder.CommentTextViewHolder;
-import com.example.luckychuan.myzhihudaily.bean.Comment;
+import com.example.luckychuan.myzhihudaily.adapter.viewholder.CommentViewHolder;
 import com.example.luckychuan.myzhihudaily.bean.ItemBean;
 
 import java.util.List;
@@ -30,12 +30,16 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        BaseViewHolder holder = null;
+        BaseViewHolder holder;
+        View itemView;
         if (viewType == TEXT) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_text, parent, false);
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_text_holder_layout, parent, false);
             holder = new CommentTextViewHolder(itemView);
+        } else {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_holder_layout, parent, false);
+            holder = new CommentViewHolder(itemView);
         }
-        //// TODO: 2017/9/2
+
 
         return holder;
     }
