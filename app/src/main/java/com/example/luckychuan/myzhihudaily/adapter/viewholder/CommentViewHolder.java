@@ -3,6 +3,7 @@ package com.example.luckychuan.myzhihudaily.adapter.viewholder;
 import android.content.Context;
 import android.text.Html;
 import android.text.TextPaint;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,7 +30,7 @@ public class CommentViewHolder extends BaseViewHolder<Comment> {
     private TextView mTime;
     private ImageView mAvatar;
     private Button mButton;
-    private boolean isShowMore = false;
+
 
     public CommentViewHolder(View itemView) {
         super(itemView);
@@ -42,30 +43,13 @@ public class CommentViewHolder extends BaseViewHolder<Comment> {
         mTime = (TextView) itemView.findViewById(R.id.comment_time);
         mAvatar = (ImageView) itemView.findViewById(comment_avatar);
 
-        mReplyTo.setMaxLines(2);
-
         //设置作者名字加粗
         TextPaint paint = mAuthor.getPaint();
         paint.setFakeBoldText(true);
 
         mButton = (Button) itemView.findViewById(R.id.comment_showMore);
         mButton.setVisibility(View.INVISIBLE);
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                if(!isShowMore){
-                    isShowMore = true;
-                    mButton.setText("收起");
-                    mReplyTo.setMaxLines(99);
-                }else{
-                    isShowMore = false;
-                    mButton.setText("展开");
-                    mReplyTo.setMaxLines(2);
-                }
-
-            }
-        });
 
     }
 
@@ -76,8 +60,19 @@ public class CommentViewHolder extends BaseViewHolder<Comment> {
         mLike.setText(bean.getLikes() + "");
         mContent.setText(bean.getContent());
         if (bean.getReplyTo() != null) {
-            mButton.setVisibility(View.VISIBLE);
             mReplyTo.setText(Html.fromHtml("<b>//" + bean.getReplyTo().getAuthor() + "：</b>" + bean.getReplyTo().getContent()));
+
+            mReplyTo.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(mReplyTo.getLineCount() >2){
+                        mButton.setVisibility(View.VISIBLE);
+                        
+                    }else{
+                        mButton.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
 
             if(bean.getReplyTo().getAuthor() == null){
                 mReplyTo.setText("抱歉！原点评已被删除");

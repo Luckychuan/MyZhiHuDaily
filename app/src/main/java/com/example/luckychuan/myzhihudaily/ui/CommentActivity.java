@@ -28,7 +28,7 @@ public class CommentActivity extends AppCompatActivity implements CommentView {
     private CommentPresenter mPresenter;
     private List<ItemBean> mComments;
     private CommentRecyclerAdapter mAdapter;
-    private int mSum;
+    private String mId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +37,14 @@ public class CommentActivity extends AppCompatActivity implements CommentView {
 
         mPresenter = new CommentPresenter(this);
         mPresenter.attach(this);
-        String id = getIntent().getStringExtra("id");
-        Log.d(TAG, "onCreate: " + id);
-        mPresenter.requestLongComment(id);
-        mPresenter.requestShortComment(id);
+        mId = getIntent().getStringExtra("id");
+    //    Log.d(TAG, "onCreate: " + id);
+        mPresenter.requestLongComment(mId);
 
         //初始化Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_comment);
-        mSum = getIntent().getIntExtra("number", 0);
-        toolbar.setTitle(mSum + "条点评");
+        int number = getIntent().getIntExtra("number", 0);
+        toolbar.setTitle(number + "条点评");
         toolbar.setNavigationIcon(R.drawable.back);
         setSupportActionBar(toolbar);
 
@@ -84,17 +83,21 @@ public class CommentActivity extends AppCompatActivity implements CommentView {
             ItemBean longComment = new ItemBean(CommentRecyclerAdapter.COMMENT,comment);
             mComments.add(longComment);
         }
-        ItemBean shortCommentText = new ItemBean(CommentRecyclerAdapter.TEXT, mSum - longComments.size() + "条短评");
-        mComments.add(shortCommentText);
-        mAdapter.notifyDataSetChanged();
+
+        //加载短评论
+        mPresenter.requestShortComment(mId);
     }
 
     @Override
     public void initShortComment(List<Comment> shortComments) {
-        Log.d(TAG, "short size " + shortComments.size());
+        ItemBean shortCommentText = new ItemBean(CommentRecyclerAdapter.TEXT, shortComments.size() + "条短评");
+        mComments.add(shortCommentText);
         for (Comment comment : shortComments) {
-            Log.d(TAG, "short: " + comment.toString());
+            ItemBean shortComment = new ItemBean(CommentRecyclerAdapter.COMMENT,comment);
+            mComments.add(shortComment);
         }
+        mAdapter.notifyDataSetChanged();
+
     }
 
 
