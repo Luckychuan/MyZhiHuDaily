@@ -10,4 +10,7 @@ public  abstract  class BaseViewHolder<T> extends RecyclerView.ViewHolder{
     }
 
     public abstract  void bindViewHolder(T bean);
+
+    public abstract  void bindViewHolder(T bean,int position);
+
 }

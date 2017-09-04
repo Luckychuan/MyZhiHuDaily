@@ -40,5 +40,10 @@ public class BannerViewHolder extends BaseViewHolder<List<LatestData.TopStory>> 
         mAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void bindViewHolder(List<LatestData.TopStory> bean, int position) {
+
+    }
+
 
 }

@@ -29,6 +29,11 @@ public class DateViewHolder extends BaseViewHolder<String> {
         textView.setText(format(bean));
     }
 
+    @Override
+    public void bindViewHolder(String bean, int position) {
+
+    }
+
     public static String format(String dateString){
         String formatDate;
         //获得今天的日期

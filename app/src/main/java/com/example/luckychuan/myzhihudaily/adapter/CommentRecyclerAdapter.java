@@ -46,7 +46,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        holder.bindViewHolder(mList.get(position).bean);
+        holder.bindViewHolder(mList.get(position).bean,position);
     }
 
     @Override

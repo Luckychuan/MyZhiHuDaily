@@ -14,6 +14,9 @@ import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.Comment;
 import com.example.luckychuan.myzhihudaily.widget.GlideCircleTransform;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.example.luckychuan.myzhihudaily.R.id.comment_avatar;
 
 /**
@@ -30,7 +33,8 @@ public class CommentViewHolder extends BaseViewHolder<Comment> {
     private TextView mTime;
     private ImageView mAvatar;
     private Button mButton;
-
+    //展开更多replyTo的item,点击展开时add,收回时remove
+    private static List<Integer> mShowMoreList = new ArrayList<>();
 
     public CommentViewHolder(View itemView) {
         super(itemView);
@@ -49,36 +53,89 @@ public class CommentViewHolder extends BaseViewHolder<Comment> {
 
         mButton = (Button) itemView.findViewById(R.id.comment_showMore);
         mButton.setVisibility(View.INVISIBLE);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isShowMore = false;
+                for (Integer i : mShowMoreList) {
+                    if (i == getLayoutPosition()) {
+                        isShowMore = true;
+                        break;
+                    }
+                }
+                if (!isShowMore) {
+                    mShowMoreList.add(Integer.valueOf(getLayoutPosition()));
+                    mButton.setText("收起");
+                    mReplyTo.setMaxLines(99);
+                } else {
+                    mShowMoreList.remove(Integer.valueOf(getLayoutPosition()));
+                    mButton.setText("展开");
+                    mReplyTo.setMaxLines(2);
+                }
 
+            }
+        });
+
+
+    }
+
+    @Override
+    public void bindViewHolder(Comment bean) {
 
     }
 
 
     @Override
-    public void bindViewHolder(Comment bean) {
+    public void bindViewHolder(Comment bean, final int position) {
         mAuthor.setText(bean.getAuthor());
         mLike.setText(bean.getLikes() + "");
         mContent.setText(bean.getContent());
-        if (bean.getReplyTo() != null) {
-            mReplyTo.setText(Html.fromHtml("<b>//" + bean.getReplyTo().getAuthor() + "：</b>" + bean.getReplyTo().getContent()));
 
+        if (bean.getReplyTo() != null) {
+            mReplyTo.setMaxLines(99);
+            mReplyTo.setText(Html.fromHtml("<b>//" + bean.getReplyTo().getAuthor() + "：</b>" + bean.getReplyTo().getContent()));
+            //获取textView的长度
             mReplyTo.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(mReplyTo.getLineCount() >2){
+                    if (mReplyTo.getLineCount() > 2) {
                         mButton.setVisibility(View.VISIBLE);
-                        
-                    }else{
+
+                        //判断是否已经展开
+                        if (mShowMoreList.size() == 0) {
+                            mButton.setText("展开");
+                            mReplyTo.setMaxLines(2);
+                        } else {
+                            for (Integer i : mShowMoreList) {
+                                if (i == position) {
+                                    mButton.setText("收起");
+                                    mReplyTo.setMaxLines(99);
+                                    break;
+                                } else {
+                                    mButton.setText("展开");
+                                    mReplyTo.setMaxLines(2);
+                                }
+                            }
+                        }
+
+                    } else {
+                        //行数不大于2的replyTo不用展开
                         mButton.setVisibility(View.INVISIBLE);
                     }
                 }
             });
 
-            if(bean.getReplyTo().getAuthor() == null){
+            if (bean.getReplyTo().getAuthor() == null) {
                 mReplyTo.setText("抱歉！原点评已被删除");
                 mButton.setVisibility(View.INVISIBLE);
             }
+        } else {
+            //没有replyTo，不显示展开按钮
+            mButton.setVisibility(View.INVISIBLE);
+            mReplyTo.setText("");
         }
+
+
         //// TODO: 2017/9/3 format
         mTime.setText(bean.getTime() + "");
 
@@ -89,5 +146,10 @@ public class CommentViewHolder extends BaseViewHolder<Comment> {
                 .transform(new GlideCircleTransform(context))
                 .into(mAvatar);
 
+    }
+
+
+    public static void clearShowMoreList() {
+        mShowMoreList.clear();
     }
 }

@@ -26,4 +26,9 @@ public class CommentTextViewHolder extends BaseViewHolder<String> {
         textView.setText(bean);
     }
 
+    @Override
+    public void bindViewHolder(String bean, int position) {
+
+    }
+
 }

@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.adapter.CommentRecyclerAdapter;
+import com.example.luckychuan.myzhihudaily.adapter.viewholder.CommentViewHolder;
 import com.example.luckychuan.myzhihudaily.bean.Comment;
 import com.example.luckychuan.myzhihudaily.bean.ItemBean;
 import com.example.luckychuan.myzhihudaily.presenter.CommentPresenter;
@@ -63,6 +64,8 @@ public class CommentActivity extends AppCompatActivity implements CommentView {
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.detach();
+        //将已经展开的评论全部清除
+        CommentViewHolder.clearShowMoreList();
     }
 
     @Override

@@ -69,7 +69,12 @@ public class StoryViewHolder extends BaseViewHolder<Story> {
 
     }
 
-  public   interface OnItemClickListener{
+    @Override
+    public void bindViewHolder(Story bean, int position) {
+
+    }
+
+    public   interface OnItemClickListener{
         void OnItemClick(int position);
     }
 

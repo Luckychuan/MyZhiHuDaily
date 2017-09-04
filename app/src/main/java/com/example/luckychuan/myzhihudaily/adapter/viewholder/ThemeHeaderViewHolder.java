@@ -38,6 +38,11 @@ public class ThemeHeaderViewHolder extends BaseViewHolder<ThemeHeaderViewHolder.
 
     }
 
+    @Override
+    public void bindViewHolder(HeaderBean bean, int position) {
+
+    }
+
 
     public static class HeaderBean{
 

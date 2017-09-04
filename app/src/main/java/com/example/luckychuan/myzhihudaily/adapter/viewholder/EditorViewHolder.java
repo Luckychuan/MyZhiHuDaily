@@ -44,5 +44,10 @@ public class EditorViewHolder extends BaseViewHolder<List<Editor>> {
         }
     }
 
+    @Override
+    public void bindViewHolder(List<Editor> bean, int position) {
+
+    }
+
 
 }
