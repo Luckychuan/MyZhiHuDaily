@@ -1,6 +1,7 @@
 package com.example.luckychuan.myzhihudaily.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
+        Log.d("position", "position " +position);
         holder.bindViewHolder(mList.get(position).bean,position);
     }
 

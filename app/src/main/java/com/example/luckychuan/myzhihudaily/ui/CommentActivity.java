@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 
 import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.adapter.CommentRecyclerAdapter;
@@ -39,7 +40,7 @@ public class CommentActivity extends AppCompatActivity implements CommentView {
         mPresenter = new CommentPresenter(this);
         mPresenter.attach(this);
         mId = getIntent().getStringExtra("id");
-    //    Log.d(TAG, "onCreate: " + id);
+        Log.d(TAG, "onCreate: " + mId);
         mPresenter.requestLongComment(mId);
 
         //初始化Toolbar
@@ -47,6 +48,12 @@ public class CommentActivity extends AppCompatActivity implements CommentView {
         int number = getIntent().getIntExtra("number", 0);
         toolbar.setTitle(number + "条点评");
         toolbar.setNavigationIcon(R.drawable.back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         setSupportActionBar(toolbar);
 
 

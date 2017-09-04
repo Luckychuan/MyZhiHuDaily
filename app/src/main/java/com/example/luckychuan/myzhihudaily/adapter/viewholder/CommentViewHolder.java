@@ -14,7 +14,9 @@ import com.example.luckychuan.myzhihudaily.R;
 import com.example.luckychuan.myzhihudaily.bean.Comment;
 import com.example.luckychuan.myzhihudaily.widget.GlideCircleTransform;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.luckychuan.myzhihudaily.R.id.comment_avatar;
@@ -92,6 +94,7 @@ public class CommentViewHolder extends BaseViewHolder<Comment> {
         mContent.setText(bean.getContent());
 
         if (bean.getReplyTo() != null) {
+            mReplyTo.setVisibility(View.VISIBLE);
             mReplyTo.setMaxLines(99);
             mReplyTo.setText(Html.fromHtml("<b>//" + bean.getReplyTo().getAuthor() + "：</b>" + bean.getReplyTo().getContent()));
             //获取textView的长度
@@ -132,12 +135,13 @@ public class CommentViewHolder extends BaseViewHolder<Comment> {
         } else {
             //没有replyTo，不显示展开按钮
             mButton.setVisibility(View.INVISIBLE);
+            mReplyTo.setVisibility(View.GONE);
             mReplyTo.setText("");
         }
 
-
-        //// TODO: 2017/9/3 format
-        mTime.setText(bean.getTime() + "");
+        //设置回复时间
+        //api提供的时间数据有误，少了3位
+        mTime.setText(new SimpleDateFormat("MM-dd HH:mm").format(new Date(bean.getTime()*1000)));
 
         Glide.with(context)
                 .load(bean.getAvatar())
