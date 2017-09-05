@@ -95,7 +95,6 @@ public class CommentViewHolder extends BaseViewHolder<Comment> {
 
         if (bean.getReplyTo() != null) {
             mReplyTo.setVisibility(View.VISIBLE);
-            mReplyTo.setMaxLines(99);
             mReplyTo.setText(Html.fromHtml("<b>//" + bean.getReplyTo().getAuthor() + "：</b>" + bean.getReplyTo().getContent()));
             //获取textView的长度
             mReplyTo.post(new Runnable() {
