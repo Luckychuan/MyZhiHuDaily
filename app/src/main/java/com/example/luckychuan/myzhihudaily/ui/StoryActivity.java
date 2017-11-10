@@ -17,6 +17,7 @@ import com.example.luckychuan.myzhihudaily.adapter.StoryContentAdapter;
 import com.example.luckychuan.myzhihudaily.bean.Comment;
 import com.example.luckychuan.myzhihudaily.bean.Comments;
 import com.example.luckychuan.myzhihudaily.bean.Story;
+import com.example.luckychuan.myzhihudaily.bean.StoryContent;
 import com.example.luckychuan.myzhihudaily.bean.StoryExtra;
 import com.example.luckychuan.myzhihudaily.bean.StoryLite;
 import com.example.luckychuan.myzhihudaily.model.Callback;
@@ -24,6 +25,7 @@ import com.example.luckychuan.myzhihudaily.model.GetCommentModelImpl;
 import com.example.luckychuan.myzhihudaily.presenter.GetStoryExtraPresenter;
 import com.example.luckychuan.myzhihudaily.view.StoryExtraView;
 import com.example.luckychuan.myzhihudaily.widget.TextActionProvider;
+import com.mob.MobSDK;
 
 import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
@@ -31,10 +33,12 @@ import org.litepal.tablemanager.Connector;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.sharesdk.onekeyshare.OnekeyShare;
+
 /**
  * 新闻的内容
  */
-public class StoryActivity extends AppCompatActivity implements StoryExtraView, Toolbar.OnMenuItemClickListener {
+public class StoryActivity extends AppCompatActivity implements StoryExtraView, Toolbar.OnMenuItemClickListener,ContentFragment.OnLoadFinishListener {
 
     private static final String TAG = "StoryActivity";
     private GetStoryExtraPresenter mPresenter;
@@ -42,10 +46,14 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
     private Story mStory;
     private List<Story> mStoryList;
 
-    Toolbar mToolbar;
+    private Toolbar mToolbar;
     //toolbar上的menuItem
-    TextActionProvider mPraiseProvider;
-    TextActionProvider mCommentProvider;
+    private TextActionProvider mPraiseProvider;
+    private TextActionProvider mCommentProvider;
+
+    private StoryContent mContent;
+
+
 
 
     @Override
@@ -86,7 +94,7 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
         //初始化ViewPager
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(1);
-        StoryContentAdapter adapter = new StoryContentAdapter(getSupportFragmentManager(), mStoryList);
+        StoryContentAdapter adapter = new StoryContentAdapter(getSupportFragmentManager(), mStoryList,this);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -122,8 +130,36 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
 //        }
 
 
+        //初始化shareSDK
+        MobSDK.init(this,"223f364b5e394","f2ccd444045d58f63eaba442d0152a26");
+
+
     }
 
+
+    private void share() {
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间等使用
+        oks.setTitle(mContent.getTitle());
+        // titleUrl是标题的网络链接，QQ和QQ空间等使用
+        oks.setTitleUrl(mContent.getShareUrl());
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText(mContent.getTitle() + mContent.getShareUrl());
+        // url仅在微信（包括好友和朋友圈）中使用
+        oks.setUrl(mContent.getShareUrl());
+
+        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+        oks.setComment("我是测试评论文本");
+        // site是分享此内容的网站名称，仅在QQ空间使用
+        oks.setSite(getString(R.string.app_name));
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+        oks.setSiteUrl(mContent.getShareUrl());
+
+        // 启动分享GUI
+        oks.show(this);
+    }
 
 
     @Override
@@ -201,7 +237,9 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.share:
-                Toast.makeText(this, "尚未开发", Toast.LENGTH_SHORT).show();
+                if(mContent != null){
+                    share();
+                }
                 break;
 
             case R.id.favorite:
@@ -224,5 +262,10 @@ public class StoryActivity extends AppCompatActivity implements StoryExtraView, 
 
         }
         return true;
+    }
+
+    @Override
+    public void onLoadFinish(StoryContent content) {
+        mContent = content;
     }
 }

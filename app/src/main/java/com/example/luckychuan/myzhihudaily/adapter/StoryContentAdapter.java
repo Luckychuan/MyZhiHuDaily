@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 
 import com.example.luckychuan.myzhihudaily.bean.Story;
 import com.example.luckychuan.myzhihudaily.ui.ContentFragment;
@@ -19,15 +18,18 @@ import java.util.List;
 public class StoryContentAdapter extends FragmentPagerAdapter {
 
     private List<Story> mStories;
+    private ContentFragment.OnLoadFinishListener mListener;
 
-    public StoryContentAdapter(FragmentManager fm,List<Story> stories) {
+    public StoryContentAdapter(FragmentManager fm, List<Story> stories, ContentFragment.OnLoadFinishListener listener) {
         super(fm);
         mStories = stories;
+        mListener = listener;
     }
 
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = new ContentFragment();
+        ContentFragment fragment = new ContentFragment();
+        fragment.setOnLoadFinshListener(mListener);
         Bundle bundle = new Bundle();
         bundle.putString("id",mStories.get(position).getId());
         fragment.setArguments(bundle);

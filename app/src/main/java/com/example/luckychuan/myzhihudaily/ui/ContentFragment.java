@@ -29,6 +29,7 @@ public class ContentFragment extends Fragment implements StoryContentView {
 
     private View mView;
     private GetStoryContentPresenter mPresenter;
+    private OnLoadFinishListener mListener;
 
     @Nullable
     @Override
@@ -46,6 +47,10 @@ public class ContentFragment extends Fragment implements StoryContentView {
         String  id = getArguments().getString("id");
         mPresenter.requestStoryContent(id);
 
+    }
+
+    public void setOnLoadFinshListener(OnLoadFinishListener listener){
+        mListener = listener;
     }
 
     @Override
@@ -83,6 +88,11 @@ public class ContentFragment extends Fragment implements StoryContentView {
         String formatHtml = content.getBody().replace("class=\"img-place-holder\"", "class=\"img-place-holder-ignored\"");
         webView.loadData(formatCss + formatHtml, "text/html; charset=UTF-8", null);
 
+        //将StoryContent回调给Activity
+        if(mListener != null){
+            mListener.onLoadFinish(content);
+        }
+
     }
 
     @Override
@@ -95,4 +105,9 @@ public class ContentFragment extends Fragment implements StoryContentView {
         super.onDestroyView();
         mPresenter.detach();
     }
+
+    public  interface OnLoadFinishListener{
+        void onLoadFinish(StoryContent content);
+    }
+
 }
